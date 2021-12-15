@@ -22,14 +22,14 @@
   },
   "homepage": "https://github.com/matjp/jweb#readme",
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/@matjp"
   },
   "dependencies": {
-    "@types/node": "^16.11.6",
-    "eslint": "^8.1.0",
-    "markdown-it": "^12.2.0",
+    "@types/node": "^16.11.13",
+    "eslint": "^8.4.1",
+    "markdown-it": "^12.3.0",
     "markdown-it-concat-code": "^1.0.0",
     "markdown-it-front-matter": "^0.2.3",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.4"
   }
 }
