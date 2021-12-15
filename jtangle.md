@@ -6,7 +6,7 @@ jweb:ts
 
 This program by Matthew J. Penwill is based on a program by Silvio Levy and Donald E. Knuth.  
 It is distributed WITHOUT ANY WARRANTY, express or implied.  
-Version 0.10 --- November 2021
+Version 0.1.1 --- December 2021
 
 Copyright (C) 2021 Matthew J. Penwill
 
