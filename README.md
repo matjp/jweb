@@ -45,3 +45,7 @@ The markdown file is converted into a WEB file by concatenating all of the fence
 Then the WEB file is passed into `jtangle` to produce the target source file.
 
 See `package.json` for examples of calling `build.js` for `jtangle` and the examples.
+
+If you find this software useful please consider making a contribution to support the development of free and open software:
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?business=4Y8W9NDGYET6A&no_recurring=0&currency_code=USD)
