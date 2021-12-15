@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.40)\n";
+const BANNER = "This is JTANGLE (Version 0.1.2)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
