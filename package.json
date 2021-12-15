@@ -1,5 +1,5 @@
 {
-  "name": "jweb",
+  "name": "@matjp/jweb",
   "version": "0.1.0",
   "description": "The JWEB System of Structured Documentation",
   "main": "jtangle.ts",
