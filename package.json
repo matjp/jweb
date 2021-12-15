@@ -21,6 +21,9 @@
     "url": "https://github.com/matjp/jweb/issues"
   },
   "homepage": "https://github.com/matjp/jweb#readme",
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com"
+  },
   "dependencies": {
     "@types/node": "^16.11.6",
     "eslint": "^8.1.0",
