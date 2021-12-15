@@ -1,6 +1,6 @@
 {
   "name": "jweb",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The JWEB System of Structured Documentation",
   "main": "jtangle.ts",
   "scripts": {
@@ -9,17 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matjp/JWEB.git"
+    "url": "git+https://github.com/matjp/jweb.git"
   },
   "keywords": [
-    "JWEB"
+    "JWEB",
+    "literate programming"
   ],
   "author": "Matthew J. Penwill",
-  "license": "SEE LICENSE IN jtangle.md",
+  "license": "See LICENSE.md",
   "bugs": {
-    "url": "https://github.com/matjp/JWEB/issues"
+    "url": "https://github.com/matjp/jweb/issues"
   },
-  "homepage": "https://github.com/matjp/JWEB#readme",
+  "homepage": "https://github.com/matjp/jweb#readme",
   "dependencies": {
     "@types/node": "^16.11.6",
     "eslint": "^8.1.0",
