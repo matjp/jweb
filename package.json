@@ -2,7 +2,7 @@
   "name": "@matjp/jweb",
   "version": "0.1.0",
   "description": "The JWEB System of Structured Documentation",
-  "main": "jtangle.ts",
+  "main": "out/jtangle.js",
   "scripts": {
     "build": "node -e \"require ('./build').run('jtangle.md','./out')\"",
     "build-wc": "node -e \"require('./build').run('examples/wc/wc.md','./examples/wc')\""
