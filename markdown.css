@@ -1,0 +1,12 @@
+body {
+    counter-reset: h3
+}
+
+h3,h4 {
+  font-weight: bold
+}
+
+h3:before {
+    counter-increment: h3;
+    content: counter(h3) ". "
+}
