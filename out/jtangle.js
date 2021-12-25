@@ -57,42 +57,42 @@ const BACKSLASH = '\\'.charCodeAt(0);
 const CARET = '^'.charCodeAt(0);
 const UNDERSCORE = '_'.charCodeAt(0);
 const VBAR = '|'.charCodeAt(0);
-/*:5*/ /*7:*/
+/*:5*/ /*9:*/
 const MAX_TEXTS = 2500;
 const STACK_SIZE = 50;
-/*:7*/ /*12:*/
+/*:9*/ /*14:*/
 const HASH_SIZE = 613;
 const HASH_END = HASH_SIZE - 1;
-/*:12*/ /*23:*/
+/*:14*/ /*25:*/
 const LESS = 0;
 const EQUAL = 1;
 const GREATER = 2;
 const PREFIX = 3;
 const EXTENSION = 4;
-/*:23*/ /*31:*/
+/*:25*/ /*33:*/
 const BAD_EXTENSION = 5;
-/*:31*/ /*37:*/
+/*:33*/ /*39:*/
 const SECTION_FLAG = MAX_TEXTS;
-/*:37*/ /*39:*/
+/*:39*/ /*41:*/
 const STR = 0o2;
 const JOIN = 0o177;
 const OUTPUT_DEFS_FLAG = (2 * 0o24000 - 1);
-/*:39*/ /*43:*/
+/*:41*/ /*45:*/
 const STACK_END = STACK_SIZE - 1;
-/*:43*/ /*47:*/
+/*:45*/ /*49:*/
 const SECTION_NUMBER = 0o201;
 const IDENTIFIER = 0o202;
-/*:47*/ /*51:*/
+/*:49*/ /*53:*/
 const NORMAL = 0;
 const NUM_OR_ID = 1;
 const POST_SLASH = 2;
 const UNBREAKABLE = 3;
 const VERBATIM = 4;
-/*:51*/ /*54:*/
+/*:53*/ /*56:*/
 const MAX_FILES = 256;
-/*:54*/ /*64:*/
+/*:56*/ /*66:*/
 const TRANSLIT_LENGTH = 10;
-/*:64*/ /*68:*/
+/*:66*/ /*70:*/
 const IGNORE = 0;
 const ORD = 0o302;
 const CONTROL_TEXT = 0o303;
@@ -103,33 +103,33 @@ const DEFINITION = 0o307;
 const BEGIN_C = 0o310;
 const SECTION_NAME = 0o311;
 const NEW_SECTION = 0o312;
-/*:68*/ /*73:*/
+/*:70*/ /*75:*/
 const CONSTANT = 0o3;
-/*:73*/ /*78:*/
+/*:75*/ /*80:*/
 const LONGEST_NAME = 1000;
 const sectionText = Buffer.alloc(LONGEST_NAME, 0, 'utf8');
 const sectionTextEnd = LONGEST_NAME;
-/*:78*/ /*82:*/
+/*:80*/ /*84:*/
 const stringText = Buffer.alloc(LONGEST_NAME, 0, 'utf8');
 const stringTextEnd = LONGEST_NAME;
-/*:82*/ /*90:*/
+/*:84*/ /*92:*/
 const MACRO = 0;
-/*:90*/ /*112:*/
+/*:92*/ /*114:*/
 const BUF_SIZE = 0o400;
 const LONG_BUF_SIZE = (BUF_SIZE + LONGEST_NAME);
 const buf = Buffer.alloc(LONG_BUF_SIZE, 0, 'utf8');
 const bufEnd = BUF_SIZE - 1;
-/*:112*/ /*115:*/
+/*:114*/ /*117:*/
 const MAX_FILE_NAME_LENGTH = 60;
 const MAX_INCLUDE_DEPTH = 10;
-/*:115*/ /*118:*/
+/*:117*/ /*120:*/
 const changeBuf = Buffer.alloc(BUF_SIZE, 0, 'utf8');
-/*:118*/ /*137:*/
+/*:120*/ /*139:*/
 const SPOTLESS = 0;
 const HARMLESS_MESSAGE = 1;
 const ERROR_MESSAGE = 2;
 const FATAL_MESSAGE = 3;
-/*:137*/ /*149:*/
+/*:139*/ /*151:*/
 var FLAG;
 (function (FLAG) {
     FLAG[FLAG["b"] = 'b'.charCodeAt(0)] = "b";
@@ -137,56 +137,58 @@ var FLAG;
     FLAG[FLAG["s"] = 's'.charCodeAt(0)] = "s";
     FLAG[FLAG["h"] = 'h'.charCodeAt(0)] = "h";
 })(FLAG || (FLAG = {}));
-/*:41*/
-/*8:*/
+/*:43*/
+/*7:*/
+let log;
+/*:7*/ /*10:*/
 let stringMem;
 let nameDir;
 let hash;
-/*:8*/ /*35:*/
+/*:10*/ /*37:*/
 let tokMem;
 let texts;
-/*:35*/ /*38:*/
+/*:37*/ /*40:*/
 let lastUnnamed;
-/*:38*/ /*42:*/
+/*:40*/ /*44:*/
 let curState;
 let stack;
 let stackIndex;
-/*:42*/ /*48:*/
+/*:44*/ /*50:*/
 let curVal;
-/*:48*/ /*52:*/
+/*:50*/ /*54:*/
 let outState;
 let protect;
-/*:52*/ /*55:*/
+/*:54*/ /*57:*/
 let sectionFiles = [];
 let curSectionFile;
 let endSectionFiles;
 let aSectionFile;
 let curSectionNameChar;
 let sectionFileName;
-/*:55*/ /*60:*/
+/*:57*/ /*62:*/
 let outputDefsSeen = false;
-/*:60*/ /*65:*/
+/*:62*/ /*67:*/
 let translit = [];
-/*:65*/ /*69:*/
+/*:67*/ /*71:*/
 let ccode = [];
-/*:69*/ /*71:*/
+/*:71*/ /*73:*/
 let commentContinues = false;
-/*:71*/ /*74:*/
+/*:73*/ /*76:*/
 let curSectionName;
 let noWhere;
-/*:74*/ /*79:*/
+/*:76*/ /*81:*/
 let idFirst;
 let idLoc;
-/*:79*/ /*92:*/
+/*:81*/ /*94:*/
 let curText;
 let nextControl;
-/*:92*/ /*99:*/
+/*:94*/ /*101:*/
 let sectionCount;
-/*:99*/ /*113:*/
+/*:101*/ /*115:*/
 let bytesRead = -1;
 let limit = 0;
 let loc = 0;
-/*:113*/ /*116:*/
+/*:115*/ /*118:*/
 let file = [];
 let fileName = [];
 let changeFile = -1;
@@ -198,44 +200,44 @@ let altWebFileName;
 let line = [];
 let webFileOpen = false;
 let includeDepth;
-/*:116*/ /*119:*/
+/*:118*/ /*121:*/
 let changeLimit;
-/*:119*/ /*127:*/
+/*:121*/ /*129:*/
 let inputHasEnded;
-/*:127*/ /*130:*/
+/*:129*/ /*132:*/
 let changedSection = [];
 let changePending;
 let printWhere = false;
-/*:130*/ /*140:*/
+/*:132*/ /*142:*/
 let runHistory = SPOTLESS;
-/*:140*/ /*148:*/
+/*:142*/ /*150:*/
 let flags = [];
-/*:148*/ /*151:*/
+/*:150*/ /*153:*/
 let isCLanguage;
-/*:151*/ /*161:*/
+/*:153*/ /*163:*/
 let outputFile;
 let outputFileName;
 let outputLanguage;
-/*:6*/ /*14:*/
+/*:6*/ /*16:*/
 function idLookup(str) {
     let i = 0;
     let h;
     const l = str.length;
     let p;
-    /*15:*/
+    /*17:*/
     h = str.charCodeAt(i);
     while (++i < l) {
         h = h + h + str.charCodeAt(i);
     }
     h = h % HASH_SIZE;
-    /*:15*/
-    /*16:*/
+    /*:17*/
+    /*18:*/
     p = hash[h];
     while (p !== 0 && !namesMatch(p, str)) {
         p = nameDir[p].lLink;
     }
     if (p === 0) {
-        /*17:*/
+        /*19:*/
         const s = stringMem.push(str) - 1;
         p = nameDir.push({
             stringIndex: s,
@@ -244,18 +246,18 @@ function idLookup(str) {
             shortestPrefixLength: 0,
             equiv: 0
         }) - 1;
-        /*:17*/
+        /*:19*/
         nameDir[p].lLink = hash[h];
         hash[h] = p;
     }
-    /*:16*/
+    /*:18*/
     return (p);
 }
-/*:14*/ /*20:*/
+/*:16*/ /*22:*/
 function setPrefixLength(p, l) {
     nameDir[p].shortestPrefixLength = l;
 }
-/*:20*/ /*21:*/
+/*:22*/ /*23:*/
 function getSectionName(p) {
     let s = stringMem[nameDir[p].stringIndex];
     const l = s.length;
@@ -278,7 +280,7 @@ function getSectionName(p) {
         n += '...';
     return n;
 }
-/*:21*/ /*22:*/
+/*:23*/ /*24:*/
 function getPrefixName(p) {
     const s = stringMem[nameDir[p].stringIndex];
     let sp = s.substring(0, nameDir[p].shortestPrefixLength);
@@ -286,7 +288,7 @@ function getPrefixName(p) {
         sp += '...';
     return sp;
 }
-/*:22*/ /*24:*/
+/*:24*/ /*26:*/
 function webStrCmp(j, k) {
     let ji = 0;
     let ki = 0;
@@ -312,7 +314,7 @@ function webStrCmp(j, k) {
         return GREATER;
     }
 }
-/*:24*/ /*25:*/
+/*:26*/ /*27:*/
 function addSectionName(parent, c, secName, isPrefix) {
     const p = nameDir.push({
         stringIndex: 0,
@@ -333,7 +335,7 @@ function addSectionName(parent, c, secName, isPrefix) {
         (c === LESS ? (nameDir[parent].lLink = p) :
             (nameDir[parent].rLink = p)));
 }
-/*:25*/ /*26:*/
+/*:27*/ /*28:*/
 function extendSectionName(p, extensionText, isPrefix) {
     let s = extensionText;
     if (isPrefix) {
@@ -351,14 +353,14 @@ function extendSectionName(p, extensionText, isPrefix) {
         equiv: 0
     }) - 1;
 }
-/*:26*/ /*27:*/
+/*:28*/ /*29:*/
 function sectionLookup(newName, isPrefix) {
     let c = 0;
     let p = nameDir[0].rLink;
     let q = 0;
     let r = 0;
     let parent = 0;
-    /*28:*/
+    /*30:*/
     while (p !== 0) {
         c = webStrCmp(newName, stringMem[nameDir[p].stringIndex].substring(0, nameDir[p].shortestPrefixLength));
         if (c === LESS || c === GREATER) {
@@ -369,7 +371,7 @@ function sectionLookup(newName, isPrefix) {
         }
         else {
             if (r !== 0) {
-                console.log('! Ambiguous prefix: matches <' + getPrefixName(p) + '>\n and <' + getPrefixName(r) + '>');
+                log('! Ambiguous prefix: matches <' + getPrefixName(p) + '>\n and <' + getPrefixName(r) + '>');
                 return 0;
             }
             r = p;
@@ -381,17 +383,17 @@ function sectionLookup(newName, isPrefix) {
             q = 0;
         }
     }
-    /*:28*/
-    /*29:*/
+    /*:30*/
+    /*31:*/
     if (r === 0) {
         return addSectionName(parent, c, newName, isPrefix);
     }
-    /*:29*/
-    /*30:*/
+    /*:31*/
+    /*32:*/
     switch (sectionNameCmp(newName, r)) {
         case PREFIX:
             if (!isPrefix) {
-                console.log('\n! New name is a prefix of <' + getSectionName(r) + '>');
+                log('\n! New name is a prefix of <' + getSectionName(r) + '>');
             }
             else if (newName.length < nameDir[r].shortestPrefixLength) {
                 setPrefixLength(r, newName.length);
@@ -404,15 +406,15 @@ function sectionLookup(newName, isPrefix) {
             }
             return r;
         case BAD_EXTENSION:
-            console.log('! New name extends <' + getSectionName(r) + '>');
+            log('! New name extends <' + getSectionName(r) + '>');
             return r;
         default:
-            console.log('! Section name incompatible with <' + getPrefixName(r) + '>,\n which abbreviates <' + getSectionName(r) + '>');
+            log('! Section name incompatible with <' + getPrefixName(r) + '>,\n which abbreviates <' + getSectionName(r) + '>');
             return r;
     }
-    /*:30*/
+    /*:32*/
 }
-/*:27*/ /*32:*/
+/*:29*/ /*34:*/
 function sectionNameCmp(name, r) {
     let q = r;
     let s;
@@ -453,16 +455,16 @@ function sectionNameCmp(name, r) {
         }
     }
 }
-/*:32*/ /*36:*/
+/*:34*/ /*38:*/
 function namesMatch(p, name) {
     return (stringMem[nameDir[p].stringIndex] === name);
 }
-/*:36*/ /*40:*/
+/*:38*/ /*42:*/
 function storeTwoBytes(x) {
     tokMem.push(x >> 8);
     tokMem.push(x & 0o377);
 }
-/*:40*/ /*45:*/
+/*:42*/ /*47:*/
 function pushLevel(p) {
     if (stackIndex === STACK_END) {
         overflow('stack');
@@ -485,7 +487,7 @@ function pushLevel(p) {
         };
     }
 }
-/*:45*/ /*46:*/
+/*:47*/ /*48:*/
 function popLevel(flag) {
     if (flag && texts[curState.repl].textLink < SECTION_FLAG) {
         curState.repl = texts[curState.repl].textLink;
@@ -498,7 +500,7 @@ function popLevel(flag) {
         Object.assign(curState, stack.pop());
     }
 }
-/*:46*/ /*49:*/
+/*:48*/ /*51:*/
 function getOutput() {
     let a;
     let done = false;
@@ -532,17 +534,17 @@ function getOutput() {
                     if (a === OUTPUT_DEFS_FLAG) {
                         outputDefs();
                     }
-                    else /*50:*/ {
+                    else /*52:*/ {
                         a -= 0o24000;
                         if (nameDir[a].equiv !== 0) {
                             pushLevel(a);
                         }
                         else if (a !== 0) {
-                            console.log('! Not present: <' + getSectionName(a) + '>');
+                            log('! Not present: <' + getSectionName(a) + '>');
                         }
                         continue;
                     }
-                    /*:50*/
+                    /*:52*/
                     ;
                     done = true;
                     break;
@@ -556,28 +558,28 @@ function getOutput() {
         }
     }
 }
-/*:49*/ /*53:*/
+/*:51*/ /*55:*/
 function flushBuffer() {
     putChar(NEWLINE);
     if (line[includeDepth] % 100 === 0 && flags[FLAG.p]) {
         if (line[includeDepth] % 500 === 0)
-            console.log('%d', line[includeDepth]);
+            log(line[includeDepth].toString());
     }
     line[includeDepth]++;
 }
-/*:53*/ /*57:*/
+/*:55*/ /*59:*/
 function phaseTwo() {
-    if (flags[FLAG.s]) /*163:*/ {
-        console.log('Strings:', stringMem);
-        console.log('Names:', nameDir);
-        console.log('Tokens:', tokMem);
-        console.log('Texts:', texts);
+    if (flags[FLAG.s]) /*165:*/ {
+        log('Strings: ' + JSON.stringify(stringMem));
+        log('Names: ' + JSON.stringify(nameDir));
+        log('Tokens: ' + JSON.stringify(tokMem));
+        log('Texts: ' + JSON.stringify(texts));
     }
-    /*:163*/
+    /*:165*/
     ;
     webFileOpen = false;
     line[includeDepth] = 1;
-    /*44:*/
+    /*46:*/
     stackIndex = 1;
     curState = {
         name: 0,
@@ -586,28 +588,28 @@ function phaseTwo() {
         end: texts[texts[0].textLink + 1].tokStart,
         section: 0
     };
-    /*:44*/
-    /*59:*/
+    /*:46*/
+    /*61:*/
     if (!outputDefsSeen) {
         outputDefs();
     }
-    /*:59*/
+    /*:61*/
     if (texts[0].textLink === 0 && curSectionFile === endSectionFiles) {
-        console.log('! No program text was specified.');
-        /*138:*/
+        log('! No program text was specified.');
+        /*140:*/
         if (runHistory === SPOTLESS)
             runHistory = HARMLESS_MESSAGE;
-        /*:138*/
+        /*:140*/
     }
     else {
         if (curSectionFile === endSectionFiles) {
             if (flags[FLAG.p]) {
-                console.log('Writing the output file: (%s)', outputFileName);
+                log('Writing the output file: (' + outputFileName + ')');
             }
         }
         else {
             if (flags[FLAG.p]) {
-                console.log('Writing the output files: (%s)', outputFileName);
+                log('Writing the output files: (' + outputFileName + ')');
             }
         }
         if (texts[0].textLink !== 0) {
@@ -616,14 +618,14 @@ function phaseTwo() {
             }
             flushBuffer();
         }
-        /*58:*/
+        /*60:*/
         for (aSectionFile = endSectionFiles; aSectionFile > curSectionFile;) {
             aSectionFile--;
             sectionFileName = getSectionName(sectionFiles[aSectionFile]);
             fs_1.default.closeSync(outputFile);
             if ((outputFile = fs_1.default.openSync(sectionFileName, 'w')) === -1)
                 fatal('! Cannot open output file ', sectionFileName);
-            console.log('\n(%s)', sectionFileName);
+            log('\n(' + sectionFileName + ')');
             line[includeDepth] = 1;
             stackIndex = 1;
             curState.name = sectionFiles[aSectionFile];
@@ -634,12 +636,12 @@ function phaseTwo() {
                 getOutput();
             flushBuffer();
         }
-        /*:58*/
+        /*:60*/
         if (flags[FLAG.h])
-            console.log('Done.');
+            log('Done.');
     }
 }
-/*:57*/ /*61:*/
+/*:59*/ /*63:*/
 function outputDefs() {
     let a;
     pushLevel(-1);
@@ -683,7 +685,7 @@ function outputDefs() {
         }
     popLevel(false);
 }
-/*:61*/ /*62:*/
+/*:63*/ /*64:*/
 function outChar(curChar) {
     let j, k;
     let cc;
@@ -700,7 +702,7 @@ function outChar(curChar) {
                     outState = NORMAL;
                 done = true;
                 break;
-            /*66:*/
+            /*68:*/
             case IDENTIFIER:
                 if (outState === NUM_OR_ID)
                     putChar(SPACE);
@@ -719,8 +721,8 @@ function outChar(curChar) {
                 outState = NUM_OR_ID;
                 done = true;
                 break;
-            /*:66*/
-            /*67:*/
+            /*:68*/
+            /*69:*/
             case SECTION_NUMBER:
                 if (curVal > 0)
                     putString('/*' + curVal.toString() + ':*/');
@@ -754,8 +756,8 @@ function outChar(curChar) {
                 }
                 done = true;
                 break;
-            /*:67*/
-            /*63:*/
+            /*:69*/
+            /*65:*/
             case PLUS_PLUS:
                 putChar(PLUS);
                 putChar(PLUS);
@@ -848,7 +850,7 @@ function outChar(curChar) {
                 outState = NORMAL;
                 done = true;
                 break;
-            /*:63*/
+            /*:65*/
             case EQUALS:
             case GREATERTHAN:
                 putChar(curChar);
@@ -894,7 +896,7 @@ function outChar(curChar) {
         }
     }
 }
-/*:62*/ /*70:*/
+/*:64*/ /*72:*/
 function skipAhead() {
     let cc;
     while (true) {
@@ -912,7 +914,7 @@ function skipAhead() {
         }
     }
 }
-/*:70*/ /*72:*/
+/*:72*/ /*74:*/
 function skipComment(isLongComment) {
     let cc;
     while (true) {
@@ -951,14 +953,14 @@ function skipComment(isLongComment) {
         }
     }
 }
-/*:72*/ /*75:*/
+/*:74*/ /*77:*/
 function isXAlpha(cc) {
     return (cc === UNDERSCORE || cc === DOLLAR);
 }
 function isHigh(cc) {
     return (cc > 0o177);
 }
-/*:75*/ /*76:*/
+/*:77*/ /*78:*/
 function getNext() {
     let preprocessing = false;
     let cc;
@@ -971,7 +973,7 @@ function getNext() {
             }
             else if (printWhere && !noWhere) {
                 printWhere = false;
-                /*94:*/
+                /*96:*/
                 {
                     let ni;
                     storeTwoBytes(0o150000);
@@ -986,7 +988,7 @@ function getNext() {
                     appRepl(Math.floor(ni / 0o400) + 0o200);
                     appRepl(ni % 0o400);
                 }
-                /*:94*/
+                /*:96*/
             }
             else
                 return (NEWLINE);
@@ -1003,11 +1005,11 @@ function getNext() {
         }
         const cNext = buf[++loc];
         if (xIsDigit(cc) || cc === DOT) 
-        /*81:*/
+        /*83:*/
         {
             idFirst = loc - 1;
             if (buf[idFirst] === DOT && !xIsDigit(buf[loc])) {
-                /*77:*/
+                /*79:*/
                 switch (cc) {
                     case PLUS:
                         if (cNext === PLUS && loc++ <= limit)
@@ -1076,7 +1078,7 @@ function getNext() {
                             return (NOT_EQ);
                         break;
                 }
-                /*:77*/
+                /*:79*/
                 return (cc);
             }
             let foundBinConst = false;
@@ -1122,9 +1124,9 @@ function getNext() {
             idLoc = loc;
             return (CONSTANT);
         }
-        /*:81*/
+        /*:83*/
         else if ((cc === SINGLEQUOTE || cc === DOUBLEQUOTE) || (cc === 'L'.charCodeAt(0) && (cNext === SINGLEQUOTE || cNext === DOUBLEQUOTE))) 
-        /*83:*/
+        /*85:*/
         {
             let delim = cc;
             idFirst = 1;
@@ -1165,16 +1167,16 @@ function getNext() {
                     stringText[idLoc] = cc;
             }
             if (idLoc >= stringTextEnd) {
-                console.log('! String too long: ');
-                console.log(stringText.toString('utf8', 1, 26));
+                log('! String too long: ');
+                log(stringText.toString('utf8', 1, 26));
                 errPrint('...');
             }
             idLoc++;
             return (STR);
         }
-        /*:83*/
+        /*:85*/
         else if (isAlpha(cc) || isXAlpha(cc) || isHigh(cc)) 
-        /*80:*/
+        /*82:*/
         {
             idFirst = --loc;
             while (isAlpha(buf[++loc]) || isDigit(buf[loc]) || isXAlpha(buf[loc]) || isHigh(buf[loc]))
@@ -1182,9 +1184,9 @@ function getNext() {
             idLoc = loc;
             return (IDENTIFIER);
         }
-        /*:80*/
+        /*:82*/
         else if (cc === AT) 
-        /*84:*/
+        /*86:*/
         {
             cc = ccode[buf[loc++]];
             switch (cc) {
@@ -1200,10 +1202,10 @@ function getNext() {
                     continue;
                 case SECTION_NAME:
                     curSectionNameChar = buf[loc - 1];
-                    /*86:*/
+                    /*88:*/
                     {
                         let k;
-                        /*87:*/
+                        /*89:*/
                         k = 0;
                         sectionText.fill(0, 1);
                         while (true) {
@@ -1213,7 +1215,7 @@ function getNext() {
                                 break;
                             }
                             cc = buf[loc];
-                            /*88:*/
+                            /*90:*/
                             if (cc === AT) {
                                 cc = buf[loc + 1];
                                 if (cc === GREATERTHAN) {
@@ -1231,7 +1233,7 @@ function getNext() {
                                 sectionText[++k] = AT;
                                 loc++;
                             }
-                            /*:88*/
+                            /*:90*/
                             loc++;
                             if (k < sectionTextEnd)
                                 k++;
@@ -1243,21 +1245,21 @@ function getNext() {
                             sectionText[k] = cc;
                         }
                         if (k >= sectionTextEnd) {
-                            console.log('! Section name too long: %s ...', sectionText.toString('utf8', 1, 26));
-                            /*138:*/
+                            log('! Section name too long: ' + sectionText.toString('utf8', 1, 26) + ' ...');
+                            /*140:*/
                             if (runHistory === SPOTLESS)
                                 runHistory = HARMLESS_MESSAGE;
-                            /*:138*/
+                            /*:140*/
                         }
                         if (sectionText[k] === SPACE && k > 0)
                             k--;
-                        /*:87*/
+                        /*:89*/
                         if (k > 3 && sectionText.toString('utf8', 1, k + 1).endsWith('...'))
                             curSectionName = sectionLookup(sectionText.toString('utf8', 1, k - 2), true);
                         else
                             curSectionName = sectionLookup(sectionText.toString('utf8', 1, k + 1), false);
                         if (curSectionNameChar === LEFTPAREN) 
-                        /*56:*/
+                        /*58:*/
                         {
                             for (aSectionFile = curSectionFile; aSectionFile < endSectionFiles; aSectionFile++)
                                 if (sectionFiles[aSectionFile] === curSectionName) {
@@ -1272,12 +1274,12 @@ function getNext() {
                                 }
                             }
                         }
-                        /*:56*/
+                        /*:58*/
                         return (SECTION_NAME);
                     }
-                /*:86*/
+                /*:88*/
                 case STR:
-                    /*89:*/
+                    /*91:*/
                     {
                         idFirst = loc++;
                         buf[limit + 1] = AT;
@@ -1290,9 +1292,9 @@ function getNext() {
                         loc += 2;
                         return (STR);
                     }
-                /*:89*/
+                /*:91*/
                 case ORD:
-                    /*85:*/
+                    /*87:*/
                     idFirst = loc;
                     if (buf[loc] === BACKSLASH) {
                         if (buf[++loc] === SINGLEQUOTE)
@@ -1314,12 +1316,12 @@ function getNext() {
                     }
                     loc++;
                     return (ORD);
-                /*:85*/
+                /*:87*/
                 default:
                     return (cc);
             }
         }
-        /*:84*/
+        /*:86*/
         else if (xIsSpace(cc)) {
             if (!preprocessing || loc > limit)
                 continue;
@@ -1329,7 +1331,7 @@ function getNext() {
         else if (cc === HASHTAG && loc === 1) {
             preprocessing = true;
         }
-        /*77:*/
+        /*79:*/
         switch (cc) {
             case PLUS:
                 if (cNext === PLUS && loc++ <= limit)
@@ -1398,18 +1400,18 @@ function getNext() {
                     return (NOT_EQ);
                 break;
         }
-        /*:77*/
+        /*:79*/
         return (cc);
     }
 }
-/*:76*/ /*91:*/
+/*:78*/ /*93:*/
 function appRepl(tok) {
     tokMem.push(tok);
 }
-/*:91*/ /*93:*/
+/*:93*/ /*95:*/
 function scanRepl(t) {
     let a = 0;
-    if (t === SECTION_NAME) /*94:*/ {
+    if (t === SECTION_NAME) /*96:*/ {
         let ni;
         storeTwoBytes(0o150000);
         if (changing) {
@@ -1423,11 +1425,11 @@ function scanRepl(t) {
         appRepl(Math.floor(ni / 0o400) + 0o200);
         appRepl(ni % 0o400);
     }
-    /*:94*/
+    /*:96*/
     let done = false;
     while (!done)
         switch (a = getNext()) {
-            /*95:*/
+            /*97:*/
             case IDENTIFIER:
                 a = idLookup(buf.toString('utf8', idFirst, idLoc));
                 appRepl(Math.floor(a / 0o400) + 0o200);
@@ -1439,7 +1441,7 @@ function scanRepl(t) {
                     break;
                 }
                 else {
-                    /*96:*/
+                    /*98:*/
                     {
                         let try_loc = loc;
                         while (buf[try_loc] === SPACE && try_loc < limit)
@@ -1451,11 +1453,11 @@ function scanRepl(t) {
                         if (buf[try_loc] === EQUALS)
                             errPrint("! Missing @ before a named section");
                     }
-                    /*:96*/
+                    /*:98*/
                     a = curSectionName;
                     appRepl(Math.floor(a / 0o400) + 0o250);
                     appRepl(a % 0o400);
-                    /*94:*/
+                    /*96:*/
                     {
                         let ni;
                         storeTwoBytes(0o150000);
@@ -1470,7 +1472,7 @@ function scanRepl(t) {
                         appRepl(Math.floor(ni / 0o400) + 0o200);
                         appRepl(ni % 0o400);
                     }
-                    /*:94*/
+                    /*:96*/
                     break;
                 }
             case OUTPUT_DEFS_CODE:
@@ -1482,7 +1484,7 @@ function scanRepl(t) {
                     a = OUTPUT_DEFS_FLAG;
                     appRepl(Math.floor(a / 0o400) + 0o200);
                     appRepl(a % 0o400);
-                    /*94:*/
+                    /*96:*/
                     {
                         let ni;
                         storeTwoBytes(0o150000);
@@ -1497,12 +1499,12 @@ function scanRepl(t) {
                         appRepl(Math.floor(ni / 0o400) + 0o200);
                         appRepl(ni % 0o400);
                     }
-                    /*:94*/
+                    /*:96*/
                 }
                 break;
             case CONSTANT:
             case STR:
-                /*97:*/
+                /*99:*/
                 appRepl(a);
                 switch (a) {
                     case STR:
@@ -1524,9 +1526,9 @@ function scanRepl(t) {
                 }
                 appRepl(a);
                 break;
-            /*:97*/
+            /*:99*/
             case ORD:
-                /*98:*/
+                /*100:*/
                 {
                     let cc = buf[idFirst];
                     if (cc === BACKSLASH) {
@@ -1594,7 +1596,7 @@ function scanRepl(t) {
                     appRepl(CONSTANT);
                 }
                 break;
-            /*:98*/
+            /*:100*/
             case DEFINITION:
             case FORMAT_CODE:
             case BEGIN_C:
@@ -1609,7 +1611,7 @@ function scanRepl(t) {
             case NEW_SECTION:
                 done = true;
                 break;
-            /*:95*/
+            /*:97*/
             case RIGHTPAREN:
                 appRepl(a);
                 if (t === MACRO)
@@ -1624,7 +1626,7 @@ function scanRepl(t) {
         textLink: 0
     });
 }
-/*:93*/ /*100:*/
+/*:95*/ /*102:*/
 function isDigit(cc) {
     return cc >= '0'.charCodeAt(0) && cc <= '9'.charCodeAt(0);
 }
@@ -1655,7 +1657,7 @@ function xIsUpper(cc) {
 function xIsXDigit(cc) {
     return isXDigit(cc) && (cc < 0o200);
 }
-/*:100*/ /*101:*/
+/*:102*/ /*103:*/
 function scanSection() {
     let p;
     let q;
@@ -1663,19 +1665,19 @@ function scanSection() {
     sectionCount++;
     noWhere = true;
     if (buf[loc - 1] === STAR && flags[FLAG.p]) {
-        console.log('*%d', sectionCount);
+        log('*' + sectionCount.toString());
     }
     nextControl = 0;
     while (true) {
-        /*102:*/
+        /*104:*/
         while (nextControl < DEFINITION)
             if ((nextControl = skipAhead()) === SECTION_NAME) {
                 loc -= 2;
                 nextControl = getNext();
             }
-        /*:102*/
+        /*:104*/
         if (nextControl === DEFINITION) {
-            /*103:*/
+            /*105:*/
             {
                 while ((nextControl = getNext()) === NEWLINE)
                     ;
@@ -1695,7 +1697,7 @@ function scanSection() {
                 scanRepl(MACRO);
                 texts[curText].textLink = 0;
             }
-            /*:103*/
+            /*:105*/
             continue;
         }
         if (nextControl === BEGIN_C) {
@@ -1704,23 +1706,23 @@ function scanSection() {
         }
         if (nextControl === SECTION_NAME) {
             p = curSectionName;
-            /*104:*/
+            /*106:*/
             while ((nextControl = getNext()) === PLUS)
                 ;
             if (nextControl !== EQUALS && nextControl !== EQ_EQ)
                 continue;
-            /*:104*/
+            /*:106*/
             break;
         }
         return;
     }
     noWhere = printWhere = false;
-    /*105:*/
-    /*106:*/
-    storeTwoBytes((0o150000 + sectionCount));
-    /*:106*/
-    scanRepl(SECTION_NAME);
     /*107:*/
+    /*108:*/
+    storeTwoBytes((0o150000 + sectionCount));
+    /*:108*/
+    scanRepl(SECTION_NAME);
+    /*109:*/
     if (p === 0) {
         texts[lastUnnamed].textLink = curText;
         lastUnnamed = curText;
@@ -1735,10 +1737,10 @@ function scanSection() {
         texts[q].textLink = curText;
     }
     texts[curText].textLink = SECTION_FLAG;
+    /*:109*/
     /*:107*/
-    /*:105*/
 }
-/*:101*/ /*108:*/
+/*:103*/ /*110:*/
 function phaseOne() {
     sectionCount = 0;
     resetInput();
@@ -1747,7 +1749,7 @@ function phaseOne() {
         scanSection();
     checkComplete();
 }
-/*:108*/ /*109:*/
+/*:110*/ /*111:*/
 function skipLimbo() {
     let cc;
     while (true) {
@@ -1762,7 +1764,7 @@ function skipLimbo() {
                 break;
             switch (ccode[cc]) {
                 case TRANSLIT_CODE:
-                    /*110:*/
+                    /*112:*/
                     while (xIsSpace(buf[loc]) && loc < limit)
                         loc++;
                     loc += 3;
@@ -1782,7 +1784,7 @@ function skipLimbo() {
                             translit[i - 0o200] = buf.toString('utf8', beg, loc);
                         }
                     }
-                    /*:110*/
+                    /*:112*/
                     break;
                 case FORMAT_CODE:
                 case AT:
@@ -1801,15 +1803,15 @@ function skipLimbo() {
         }
     }
 }
-/*:109*/ /*111:*/
+/*:111*/ /*113:*/
 function printStats() {
-    console.log('\nMemory usage statistics:');
-    console.log('%d names', nameDir.length);
-    console.log('%d strings', stringMem.length);
-    console.log('%d replacement texts', texts.length - 1);
-    console.log('%d tokens', tokMem.length);
+    log('\nMemory usage statistics:');
+    log(nameDir.length.toString() + ' names');
+    log(stringMem.length.toString() + ' strings');
+    log((texts.length - 1).toString() + ' replacement texts');
+    log(tokMem.length.toString() + ' tokens');
 }
-/*:111*/ /*114:*/
+/*:113*/ /*116:*/
 function inputLn(fp) {
     if (fp < 0)
         return (false);
@@ -1829,10 +1831,10 @@ function inputLn(fp) {
         return (false);
     return (true);
 }
-/*:114*/ /*120:*/
+/*:116*/ /*122:*/
 function primeTheChangeBuffer() {
     changeLimit = 0;
-    /*121:*/
+    /*123:*/
     while (true) {
         changeLine++;
         if (!inputLn(changeFile))
@@ -1850,8 +1852,8 @@ function primeTheChangeBuffer() {
             errPrint("! Missing @x in change file");
         }
     }
-    /*:121*/
-    /*122:*/
+    /*:123*/
+    /*124:*/
     do {
         changeLine++;
         if (!inputLn(changeFile)) {
@@ -1859,15 +1861,15 @@ function primeTheChangeBuffer() {
             return;
         }
     } while (limit === 0);
-    /*:122*/
-    /*123:*/
+    /*:124*/
+    /*125:*/
     {
         changeLimit = limit;
         buf.copy(changeBuf, 0, 0, limit);
     }
-    /*:123*/
+    /*:125*/
 }
-/*:120*/ /*124:*/
+/*:122*/ /*126:*/
 function ifSectionStartMakePending(b) {
     buf[limit] = EXCLAMATION;
     for (loc = 0; xIsSpace(buf[loc]); loc++)
@@ -1876,11 +1878,11 @@ function ifSectionStartMakePending(b) {
     if (buf[loc] === AT && (xIsSpace(buf[loc + 1]) || buf[loc + 1] === STAR))
         changePending = b;
 }
-/*:124*/ /*125:*/
+/*:126*/ /*127:*/
 function checkChange() {
     let n = 0;
-    if /*117:*/ (changeLimit !== limit || buf.compare(changeBuf, 0, changeLimit, 0, limit) !== 0)
-        /*:117*/
+    if /*119:*/ (changeLimit !== limit || buf.compare(changeBuf, 0, changeLimit, 0, limit) !== 0)
+        /*:119*/
         return;
     changePending = false;
     if (!changedSection[sectionCount]) {
@@ -1900,7 +1902,7 @@ function checkChange() {
         }
         if (limit > 1 && buf[0] === AT) {
             const xyz_code = xIsUpper(buf[1]) ? buf[1] + 32 : buf[1];
-            /*126:*/
+            /*128:*/
             if (xyz_code === 'x'.charCodeAt(0) || xyz_code === 'z'.charCodeAt(0)) {
                 loc = 2;
                 errPrint("! Where is the matching @y?");
@@ -1908,20 +1910,20 @@ function checkChange() {
             else if (xyz_code === 'y'.charCodeAt(0)) {
                 if (n > 0) {
                     loc = 2;
-                    console.log('! Hmm... %d ', n);
+                    log('! Hmm... ' + n.toString() + ' ');
                     errPrint("of the preceding lines failed to match");
                 }
                 changeDepth = includeDepth;
                 return;
             }
-            /*:126*/
+            /*:128*/
         }
-        /*123:*/
+        /*125:*/
         {
             changeLimit = limit;
             buf.copy(changeBuf, 0, 0, limit);
         }
-        /*:123*/
+        /*:125*/
         changing = false;
         line[includeDepth]++;
         while (!inputLn(file[includeDepth])) {
@@ -1933,17 +1935,17 @@ function checkChange() {
             includeDepth--;
             line[includeDepth]++;
         }
-        if /*117:*/ (changeLimit !== limit || buf.compare(changeBuf, 0, changeLimit, 0, limit) !== 0)
-            /*:117*/
+        if /*119:*/ (changeLimit !== limit || buf.compare(changeBuf, 0, changeLimit, 0, limit) !== 0)
+            /*:119*/
             n++;
     }
 }
-/*:125*/ /*128:*/
+/*:127*/ /*130:*/
 function resetInput() {
     limit = 0;
     loc = 1;
     buf[0] = SPACE;
-    /*129:*/
+    /*131:*/
     if ((file[0] = fs_1.default.openSync(fileName[0], 'r')) === -1) {
         fileName[0] = altWebFileName;
         if ((file[0] = fs_1.default.openSync(fileName[0], 'r')) === -1)
@@ -1953,7 +1955,7 @@ function resetInput() {
     if (changeFileName !== '')
         if ((changeFile = fs_1.default.openSync(changeFileName, 'r')) === -1)
             fatal('! Cannot open change file ', changeFileName);
-    /*:129*/
+    /*:131*/
     includeDepth = 0;
     line[includeDepth] = 0;
     changeLine = 0;
@@ -1966,11 +1968,11 @@ function resetInput() {
     buf[0] = SPACE;
     inputHasEnded = false;
 }
-/*:128*/ /*131:*/
+/*:130*/ /*133:*/
 function getLine() {
     while (true) {
         if (changeFile >= 0 && changing && includeDepth === changeDepth) 
-        /*135:*/
+        /*137:*/
         {
             changeLine++;
             if (!inputLn(changeFile)) {
@@ -2003,10 +2005,10 @@ function getLine() {
                 }
             }
         }
-        /*:135*/
+        /*:137*/
         ;
         if (!changing || includeDepth > changeDepth) {
-            /*134:*/
+            /*136:*/
             {
                 line[includeDepth]++;
                 while (!inputLn(file[includeDepth])) {
@@ -2029,7 +2031,7 @@ function getLine() {
                             if (changeLimit > 0)
                                 checkChange();
             }
-            /*:134*/
+            /*:136*/
             ;
             if (changeFile >= 0 && changing && includeDepth === changeDepth)
                 continue;
@@ -2052,7 +2054,7 @@ function getLine() {
                 continue;
             }
             includeDepth++;
-            /*133:*/
+            /*135:*/
             {
                 let k = '';
                 let l;
@@ -2062,12 +2064,12 @@ function getLine() {
                         k += buf[loc];
                         loc++;
                     }
-                    if (loc === limit) /*132:*/ {
+                    if (loc === limit) /*134:*/ {
                         includeDepth--;
                         errPrint("! Include file name too long");
                         continue;
                     }
-                    /*:132*/
+                    /*:134*/
                 }
                 else {
                     while (buf[loc] !== SPACE && buf[loc] !== TAB && buf[loc] !== DOUBLEQUOTE && k.length <= MAX_FILE_NAME_LENGTH - 1) {
@@ -2075,12 +2077,12 @@ function getLine() {
                         loc++;
                     }
                 }
-                if (k.length > MAX_FILE_NAME_LENGTH - 1) /*132:*/ {
+                if (k.length > MAX_FILE_NAME_LENGTH - 1) /*134:*/ {
                     includeDepth--;
                     errPrint("! Include file name too long");
                     continue;
                 }
-                /*:132*/
+                /*:134*/
                 if ((file[includeDepth] = fs_1.default.openSync(fileName[includeDepth], 'r')) >= 0) {
                     line[includeDepth] = 0;
                     printWhere = true;
@@ -2088,23 +2090,23 @@ function getLine() {
                 }
                 const jwebInputs = process.env.JWEBINPUTS;
                 if (jwebInputs !== undefined) {
-                    if ((l = jwebInputs.length) > MAX_FILE_NAME_LENGTH - 2) /*132:*/ {
+                    if ((l = jwebInputs.length) > MAX_FILE_NAME_LENGTH - 2) /*134:*/ {
                         includeDepth--;
                         errPrint("! Include file name too long");
                         continue;
                     }
-                    /*:132*/
+                    /*:134*/
                 }
                 else {
                     l = 0;
                 }
                 if (l > 0) {
-                    if (l + k.length + 3 >= MAX_FILE_NAME_LENGTH) /*132:*/ {
+                    if (l + k.length + 3 >= MAX_FILE_NAME_LENGTH) /*134:*/ {
                         includeDepth--;
                         errPrint("! Include file name too long");
                         continue;
                     }
-                    /*:132*/
+                    /*:134*/
                     fileName[includeDepth] = path_1.default.join(jwebInputs !== undefined ? jwebInputs : '', k);
                     if ((file[includeDepth] = fs_1.default.openSync(fileName[includeDepth], 'r')) >= 0) {
                         line[includeDepth] = 0;
@@ -2116,12 +2118,12 @@ function getLine() {
                 errPrint("! Cannot open include file");
                 continue;
             }
-            /*:133*/
+            /*:135*/
         }
         return true;
     }
 }
-/*:131*/ /*136:*/
+/*:133*/ /*138:*/
 function checkComplete() {
     if (changeLimit !== 0) {
         changeBuf.copy(buf, 0, 0, changeLimit + 1);
@@ -2132,17 +2134,17 @@ function checkComplete() {
         errPrint("! Change file entry did not match");
     }
 }
-/*:136*/ /*141:*/
+/*:138*/ /*143:*/
 function errPrint(s) {
     let k, l;
-    console.log(s.charCodeAt(0) === EXCLAMATION ? '\n' + s : s);
-    if (webFileOpen) /*142:*/ {
+    log(s.charCodeAt(0) === EXCLAMATION ? '\n' + s : s);
+    if (webFileOpen) /*144:*/ {
         if (changing && includeDepth === changeDepth)
-            console.log('. (l. %d of change file)\n', changeLine);
+            log('. (l. ' + changeLine.toString() + ' of change file)\n');
         else if (includeDepth === 0)
-            console.log('. (l. %d)\n', line[includeDepth]);
+            log('. (l. ' + line[includeDepth].toString() + ' )\n');
         else
-            console.log('. (l. %d of include file %s)\n', line[includeDepth], fileName[includeDepth]);
+            log('. (l. ' + line[includeDepth].toString() + ' of include file ' + fileName[includeDepth].toString + ')\n');
         l = (loc >= limit ? limit : loc);
         let tempStr = '';
         if (l > 0) {
@@ -2151,7 +2153,7 @@ function errPrint(s) {
                     tempStr += String.fromCharCode(SPACE);
                 else
                     tempStr += buf[k];
-            console.log(tempStr);
+            log(tempStr);
             tempStr = '';
             for (k = 0; k < l; k++)
                 tempStr += String.fromCharCode(SPACE);
@@ -2161,58 +2163,58 @@ function errPrint(s) {
         if (buf[limit] === VBAR)
             tempStr += VBAR;
         tempStr += String.fromCharCode(SPACE);
-        console.log(tempStr);
+        log(tempStr);
     }
-    /*:142*/
-    /*139:*/
+    /*:144*/
+    /*141:*/
     runHistory = ERROR_MESSAGE;
-    /*:139*/
+    /*:141*/
 }
-/*:141*/ /*143:*/
+/*:143*/ /*145:*/
 function wrapUp() {
     if (flags[FLAG.s])
         printStats();
-    /*144:*/
+    /*146:*/
     switch (runHistory) {
         case SPOTLESS:
             if (flags[FLAG.h])
-                console.log('(No errors were found.)\n');
+                log('(No errors were found.)\n');
             break;
         case HARMLESS_MESSAGE:
-            console.log('(Did you see the warning message above?)\n');
+            log('(Did you see the warning message above?)\n');
             break;
         case ERROR_MESSAGE:
-            console.log('(Pardon me, but I think I spotted something wrong.)\n');
+            log('(Pardon me, but I think I spotted something wrong.)\n');
             break;
         case FATAL_MESSAGE:
-            console.log('(That was a fatal error, my friend.)\n');
+            log('(That was a fatal error, my friend.)\n');
     }
-    /*:144*/
+    /*:146*/
     if (runHistory > HARMLESS_MESSAGE)
         return (1);
     else
         return (0);
 }
-/*:143*/ /*145:*/
+/*:145*/ /*147:*/
 function fatal(s, t) {
     if (s !== '')
-        console.log(s);
+        log(s);
     if (t !== '')
         errPrint(t);
     runHistory = FATAL_MESSAGE;
     process.exitCode = wrapUp();
     throw 'Fatal Error: exiting...';
 }
-/*:145*/ /*146:*/
+/*:147*/ /*148:*/
 function overflow(t) {
-    console.log('\n! Sorry, %s capacity exceeded', t);
+    log('\n! Sorry, ' + t + ' capacity exceeded');
     fatal('', '');
 }
-/*:146*/ /*147:*/
+/*:148*/ /*149:*/
 function confusion(s) {
     fatal("! This can't happen: ", s);
 }
-/*:147*/ /*153:*/
+/*:149*/ /*155:*/
 function scanArgs(argv) {
     if (argv === [])
         fatal('! No command line arguments provided.', '');
@@ -2223,18 +2225,19 @@ function scanArgs(argv) {
     let processedChangeFile = false;
     let processedOutFile = false;
     let processedLang = false;
+    let processedLogFunction = false;
     let flagChange;
     let i;
     while (--argc >= 0) {
         argPos++;
         if ((argv[argPos].length > 1) && (argv[argPos].charCodeAt(0) === MINUS || argv[argPos].charCodeAt(0) === PLUS)) 
-        /*158:*/
+        /*160:*/
         {
             flagChange = !(argv[argPos].charCodeAt(0) === MINUS);
             for (dotPos = 1; dotPos < argv[argPos].length; dotPos++)
                 flags[argv[argPos].charCodeAt(dotPos)] = flagChange;
         }
-        /*:158*/
+        /*:160*/
         else {
             dotPos = 0;
             for (i = 0; i < argv[argPos].length; i++) {
@@ -2246,12 +2249,12 @@ function scanArgs(argv) {
                 }
             }
             if (!processedWebFile) 
-            /*154:*/
+            /*156:*/
             {
                 if (i > MAX_FILE_NAME_LENGTH - 5)
-                    /*160:*/
+                    /*162:*/
                     fatal('! Filename too long\n', argv[argPos]);
-                /*:160*/
+                /*:162*/
                 if (dotPos === 0) {
                     fileName[0] = argv[argPos] + '.w';
                     altWebFileName = argv[argPos] + '.web';
@@ -2261,15 +2264,15 @@ function scanArgs(argv) {
                 }
                 processedWebFile = true;
             }
-            /*:154*/
+            /*:156*/
             else if (!processedChangeFile) 
-            /*155:*/
+            /*157:*/
             {
                 if (argv[argPos].charCodeAt(0) !== MINUS) {
                     if (i > MAX_FILE_NAME_LENGTH - 4)
-                        /*160:*/
+                        /*162:*/
                         fatal('! Filename too long\n', argv[argPos]);
-                    /*:160*/
+                    /*:162*/
                     if (dotPos === 0)
                         changeFileName = argv[argPos] + '.ch';
                     else
@@ -2277,26 +2280,26 @@ function scanArgs(argv) {
                 }
                 processedChangeFile = true;
             }
-            /*:155*/
+            /*:157*/
             else if (!processedLang) 
-            /*156:*/
+            /*158:*/
             {
                 if (i > MAX_FILE_NAME_LENGTH - 5)
-                    /*160:*/
+                    /*162:*/
                     fatal('! Filename too long\n', argv[argPos]);
-                /*:160*/
+                /*:162*/
                 outputLanguage = argv[argPos];
                 isCLanguage = (outputLanguage === 'c' || outputLanguage === 'cc' || outputLanguage === 'cpp' || outputLanguage === 'c++' || outputLanguage === 'cp' || outputLanguage === 'cxx');
                 processedLang = true;
             }
-            /*:156*/
+            /*:158*/
             else if (!processedOutFile) 
-            /*157:*/
+            /*159:*/
             {
                 if (i > MAX_FILE_NAME_LENGTH - 5)
-                    /*160:*/
+                    /*162:*/
                     fatal('! Filename too long\n', argv[argPos]);
-                /*:160*/
+                /*:162*/
                 if (dotPos === 0) {
                     outputFileName = argv[argPos] + '.' + outputLanguage;
                 }
@@ -2305,40 +2308,45 @@ function scanArgs(argv) {
                 }
                 processedOutFile = true;
             }
-            /*:157*/
+            /*:159*/
             else 
-            /*159:*/
+            /*161:*/
             {
                 fatal('! Usage: jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile\n', '');
             }
-            /*:159*/
+            /*:161*/
         }
     }
     if (!processedWebFile) 
-    /*159:*/
+    /*161:*/
     {
         fatal('! Usage: jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile\n', '');
     }
-    /*:159*/
+    /*:161*/
     if (flags[FLAG.b]) {
-        console.log(BANNER);
+        log(BANNER);
     }
     ;
-    console.log('Web file name: %s', fileName[0]);
-    console.log('Alt web file name: %s', altWebFileName);
-    console.log('Change file name: %s', changeFileName);
-    console.log('Output file name: %s', outputFileName);
-    console.log('Output language: %s', outputLanguage);
+    log('Web file name: ' + fileName[0]);
+    log('Alt web file name: ' + altWebFileName);
+    log('Change file name: ' + changeFileName);
+    log('Output file name: ' + outputFileName);
+    log('Output language: ' + outputLanguage);
 }
-/*:153*/ /*162:*/
+/*:155*/ /*164:*/
 function putChar(cc) {
     fs_1.default.writeSync(outputFile, String.fromCharCode(cc));
 }
 function putString(s) {
     fs_1.default.writeSync(outputFile, s);
 }
-module.exports = function jtangle(argv) {
-    /*164:*/
+module.exports = function jtangle(argv, logFunc) {
+    /*8:*/
+    {
+        log = logFunc ? log = logFunc : console.log;
+    }
+    /*:8*/
+    /*166:*/
     stringMem = [];
     nameDir = [];
     hash = [];
@@ -2444,34 +2452,34 @@ module.exports = function jtangle(argv) {
     outputFileName = '';
     outputLanguage = '';
     isCLanguage = false;
-    /*:164*/
-    /*10:*/
+    /*:166*/
+    /*12:*/
     stringMem.push('');
     nameDir.push({ stringIndex: 0,
         lLink: 0,
         rLink: 0,
         shortestPrefixLength: 0,
         equiv: 0 });
-    /*:10*/ /*13:*/
+    /*:12*/ /*15:*/
     for (let h = 0; h <= HASH_END; h++) {
         hash[h] = 0;
     }
-    /*:13*/ /*18:*/
+    /*:15*/ /*20:*/
     nameDir[0].rLink = 0;
-    /*:18*/
-    /*150:*/
+    /*:20*/
+    /*152:*/
     for (let i = 0; i < flags.length; i++)
         flags[i] = false;
     flags[FLAG.b] = flags[FLAG.h] = flags[FLAG.p] = true;
-    /*:150*/
-    /*152:*/
+    /*:152*/
+    /*154:*/
     scanArgs(argv);
     if ((outputFile = fs_1.default.openSync(outputFileName, 'w')) === -1)
         fatal('! Cannot open output file ', outputFileName);
-    /*:152*/
+    /*:154*/
     phaseOne();
     phaseTwo();
     return wrapUp();
 };
-/*:162*/
+/*:164*/
 //# sourceMappingURL=jtangle.js.map

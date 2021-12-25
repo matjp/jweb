@@ -112,15 +112,30 @@ const VBAR = '|'.charCodeAt(0);
 
 ```ts
 @c
-  export = function jtangle(argv: string[]) {
+  export = function jtangle(argv: string[], logFunc?: (msg: string) => void) {
+    @<Get_log_function@>    
     @<Set_initial_values@>  
     @<Initialize_pointers@>
     @<Set_the_default_options@>
-    @<Scan_arguments_and_open_output_files@>
+    @<Scan_arguments_and_open_output_files@>    
     phaseOne(); /* read all the user's text and compress it into tokMem */
     phaseTwo(); /* output the contents of the compressed tables */
     return wrapUp(); /* and exit gracefully */
   }
+```
+
+Determine the logging function to use. If none is passed to `jtangle` then messages will be written to the console.
+
+```ts
+@<Global_var...@>=
+let log: (msg: string) => void;
+```
+
+```ts
+@<Get_log_function@>=
+{
+    log = logFunc ? log = logFunc : console.log;
+}
 ```
 
 The following parameters were sufficient in `ctangle`, they should also be sufficient for most applications of `jtangle`.
@@ -429,7 +444,7 @@ while (p !== 0) { /* compare shortest prefix of p with new name */
     p = c === LESS ? nameDir[p].lLink : nameDir[p].rLink;
   } else { /* new name matches p */
     if (r !== 0) {  /* and also r: illegal */
-      console.log('! Ambiguous prefix: matches <' + getPrefixName(p) + '>\n and <' + getPrefixName(r) +'>');
+      log('! Ambiguous prefix: matches <' + getPrefixName(p) + '>\n and <' + getPrefixName(r) +'>');
       return 0; /* the unsection */
     }
     r = p; /* remember match */
@@ -457,7 +472,7 @@ Although error messages are given in anomalous cases, we do return the unique be
 switch (sectionNameCmp(newName, r)) { /* compare all of r with new name */
   case PREFIX:
     if (!isPrefix) {
-      console.log('\n! New name is a prefix of <' + getSectionName(r) + '>');
+      log('\n! New name is a prefix of <' + getSectionName(r) + '>');
     }
     else if (newName.length < nameDir[r].shortestPrefixLength) {
       setPrefixLength(r, newName.length)
@@ -471,10 +486,10 @@ switch (sectionNameCmp(newName, r)) { /* compare all of r with new name */
     }
     return r;
   case BAD_EXTENSION:
-    console.log('! New name extends <' + getSectionName(r) + '>');
+    log('! New name extends <' + getSectionName(r) + '>');
     return r;
   default: /* no match: illegal */
-    console.log('! Section name incompatible with <' + getPrefixName(r) + '>,\n which abbreviates <' + getSectionName(r) + '>');
+    log('! Section name incompatible with <' + getPrefixName(r) + '>,\n which abbreviates <' + getSectionName(r) + '>');
     return r;
 }
 ```
@@ -787,7 +802,7 @@ The user may have forgotten to give any code text for a section name, or the cod
   if (nameDir[a].equiv !== 0) {
     pushLevel(a)
   } else if (a !== 0) {
-    console.log('! Not present: <' + getSectionName(a) + '>');
+    log('! Not present: <' + getSectionName(a) + '>');
   }
   continue;
 }
@@ -835,7 +850,7 @@ Here is a routine that is invoked when we want to output the current line. Durin
 function flushBuffer() /* writes one line to output file */ {
   putChar(NEWLINE);
   if (line[includeDepth] % 100 === 0 && flags[FLAG.p]) {
-    if (line[includeDepth] % 500 === 0) console.log('%d',line[includeDepth]);
+    if (line[includeDepth] % 500 === 0) log(line[includeDepth].toString());
   }
   line[includeDepth]++;
 }
@@ -889,17 +904,17 @@ function phaseTwo() {
   @<Initialize_the_output_stacks@>
   @<Output_macro_definitions_if_appropriate@>
   if (texts[0].textLink === 0 && curSectionFile === endSectionFiles) {
-    console.log('! No program text was specified.');
+    log('! No program text was specified.');
     @<Mark_harmless@>
   }
   else {
     if (curSectionFile === endSectionFiles) {
       if (flags[FLAG.p]) {
-        console.log('Writing the output file: (%s)', outputFileName);
+        log('Writing the output file: (' + outputFileName + ')');
       }
     } else {
       if (flags[FLAG.p]) {
-        console.log('Writing the output files: (%s)', outputFileName);
+        log('Writing the output files: (' + outputFileName + ')');
       }
     }
 
@@ -912,7 +927,7 @@ function phaseTwo() {
 
     @<Write_all_the_named_output_files@>
 
-    if (flags[FLAG.h]) console.log('Done.');
+    if (flags[FLAG.h]) log('Done.');
   }
 }
 ```
@@ -927,7 +942,7 @@ for (aSectionFile = endSectionFiles; aSectionFile > curSectionFile;) {
   fs.closeSync(outputFile);
   if ((outputFile = fs.openSync(sectionFileName, 'w')) === -1)
     fatal('! Cannot open output file ', sectionFileName);
-  console.log('\n(%s)', sectionFileName);
+  log('\n(' + sectionFileName + ')');
   line[includeDepth] = 1;
   stackIndex = 1;
   curState.name = sectionFiles[aSectionFile];
@@ -1489,8 +1504,8 @@ const stringTextEnd: number = LONGEST_NAME;
   }
 
   if (idLoc >= stringTextEnd) {
-    console.log('! String too long: ');
-    console.log(stringText.toString('utf8', 1, 26));
+    log('! String too long: ');
+    log(stringText.toString('utf8', 1, 26));
     errPrint('...');
   }
 
@@ -1593,7 +1608,7 @@ while (true) {
 sectionText[k] = cc;
 }
 if (k >= sectionTextEnd) {
-  console.log('! Section name too long: %s ...', sectionText.toString('utf8', 1, 26));
+  log('! Section name too long: ' + sectionText.toString('utf8', 1, 26) + ' ...');
   @<Mark_harmless@>
 }
 if (sectionText[k] === SPACE && k > 0) k--;
@@ -1921,7 +1936,7 @@ function scanSection()
   noWhere = true;
   if (buf[loc-1] === STAR && flags[FLAG.p]) {
     /* starred section */
-    console.log('*%d', sectionCount);
+    log('*' + sectionCount.toString());
   }
   nextControl = 0;
   while (true) {
@@ -2086,11 +2101,11 @@ function skipLimbo()
 ```ts
 @c
 function printStats() {
-  console.log('\nMemory usage statistics:');
-  console.log('%d names', nameDir.length);
-  console.log('%d strings', stringMem.length);
-  console.log('%d replacement texts', texts.length - 1);
-  console.log('%d tokens', tokMem.length);
+  log('\nMemory usage statistics:');
+  log(nameDir.length.toString() + ' names');
+  log(stringMem.length.toString() + ' strings');
+  log((texts.length - 1).toString() + ' replacement texts');
+  log(tokMem.length.toString() + ' tokens');
 }
 ```
 
@@ -2298,7 +2313,7 @@ if (xyz_code === 'x'.charCodeAt(0) || xyz_code === 'z'.charCodeAt(0)) {
 } else if (xyz_code === 'y'.charCodeAt(0)) {
   if (n > 0) {
     loc = 2;
-    console.log('! Hmm... %d ',n);
+    log('! Hmm... ' + n.toString() + ' ');
     errPrint("of the preceding lines failed to match");
   }
   changeDepth = includeDepth;
@@ -2569,7 +2584,7 @@ The command '`errPrint("! Error message")`' will report a syntax error to the us
 function errPrint(s: string)
 {
   let k: number, l: number; /* pointers into buf */
-  console.log(s.charCodeAt(0) === EXCLAMATION ? '\n' + s : s)
+  log(s.charCodeAt(0) === EXCLAMATION ? '\n' + s : s)
   if (webFileOpen) @<Print_error_location_based_on_input_buffer@>
   @<Mark_error@>
 }
@@ -2581,11 +2596,11 @@ The error locations can be indicated by using the global variables `loc`, `line[
 @<Print_error_location_based_on_input_buffer@>=
 {
   if (changing && includeDepth === changeDepth)
-    console.log('. (l. %d of change file)\n', changeLine)
+    log('. (l. ' + changeLine.toString() + ' of change file)\n')
   else if (includeDepth === 0)
-    console.log('. (l. %d)\n', line[includeDepth])
+    log('. (l. ' + line[includeDepth].toString() + ' )\n')
   else
-    console.log('. (l. %d of include file %s)\n', line[includeDepth], fileName[includeDepth]);
+    log('. (l. ' + line[includeDepth].toString() + ' of include file ' + fileName[includeDepth].toString + ')\n');
 
   l = (loc >= limit ? limit: loc);
 
@@ -2596,7 +2611,7 @@ The error locations can be indicated by using the global variables `loc`, `line[
         tempStr += String.fromCharCode(SPACE);
       else
         tempStr +=  buf[k]; /* print the characters already read */
-    console.log(tempStr);
+    log(tempStr);
     tempStr = '';
     for (k = 0; k < l ; k++) tempStr += String.fromCharCode(SPACE); /* space out the next line */
   }
@@ -2605,7 +2620,7 @@ The error locations can be indicated by using the global variables `loc`, `line[
 
   if (buf[limit] === VBAR) tempStr += VBAR; /* end of source text in section names */
   tempStr += String.fromCharCode(SPACE); /* to separate the message from future asterisks */
-  console.log(tempStr);  
+  log(tempStr);  
 }
 ```
 
@@ -2634,15 +2649,15 @@ function wrapUp(): number
 switch (runHistory) {
   case SPOTLESS:
     if (flags[FLAG.h])
-      console.log('(No errors were found.)\n');
+      log('(No errors were found.)\n');
     break;
 case HARMLESS_MESSAGE:
-  console.log('(Did you see the warning message above?)\n');
+  log('(Did you see the warning message above?)\n');
   break;
 case ERROR_MESSAGE:
-  console.log('(Pardon me, but I think I spotted something wrong.)\n'); break;
+  log('(Pardon me, but I think I spotted something wrong.)\n'); break;
 case FATAL_MESSAGE:
-  console.log('(That was a fatal error, my friend.)\n');
+  log('(That was a fatal error, my friend.)\n');
 } /* there are no other cases */
 ```
 
@@ -2654,7 +2669,7 @@ The two parameters to `fatal` are strings that are essentially concatenated to p
 @c
 function fatal(s: string, t: string)
 {
-  if (s !== '') console.log(s);
+  if (s !== '') log(s);
   if (t !== '') errPrint(t);
   runHistory = FATAL_MESSAGE;
   process.exitCode = wrapUp();
@@ -2668,7 +2683,7 @@ An overflow stop occurs if JWEB's tables aren't large enough.
 @c
 function overflow(t: string)
 {
-  console.log('\n! Sorry, %s capacity exceeded', t);
+  log('\n! Sorry, ' + t + ' capacity exceeded');
   fatal('', '');
 }
 ```
@@ -2741,6 +2756,7 @@ function scanArgs(argv: string[])
   let processedChangeFile = false;
   let processedOutFile = false;
   let processedLang = false;
+  let processedLogFunction = false;
   let flagChange: boolean;
   let i: number;
 
@@ -2773,13 +2789,13 @@ function scanArgs(argv: string[])
   if (!processedWebFile)
     @<Print_usage_error_message_and_quit@>
 
-  if (flags[FLAG.b]) { console.log(BANNER) }; /* print a banner line */
+  if (flags[FLAG.b]) { log(BANNER) }; /* print a banner line */
 
-  console.log('Web file name: %s', fileName[0]);
-  console.log('Alt web file name: %s', altWebFileName);  
-  console.log('Change file name: %s', changeFileName);  
-  console.log('Output file name: %s', outputFileName);
-  console.log('Output language: %s', outputLanguage);  
+  log('Web file name: ' + fileName[0]);
+  log('Alt web file name: ' + altWebFileName);
+  log('Change file name: ' + changeFileName);
+  log('Output file name: ' + outputFileName);
+  log('Output language: ' + outputLanguage);
 }
 ```
 
@@ -2895,10 +2911,10 @@ function putString(s: string) {
 ```ts
 @<Print_debug...@>=
 {
-  console.log('Strings:', stringMem);
-  console.log('Names:', nameDir);
-  console.log('Tokens:', tokMem);
-  console.log('Texts:', texts);
+  log('Strings: ' + JSON.stringify(stringMem));
+  log('Names: ' + JSON.stringify(nameDir));
+  log('Tokens: ' + JSON.stringify(tokMem));
+  log('Texts: ' + JSON.stringify(texts));
 }
 ```
 
