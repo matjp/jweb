@@ -32,11 +32,15 @@ See `cwebman.pdf` in `docs` for the CWEB syntax, and see `jtangle.md` and the `e
 
 `jtangle` accepts WEB files as input, so any existing CWEB (*.w) file can be processed into a program source file.
 
-The command line syntax for `jtangle` is slightly different to that of `ctangle`. i.e.
+Note tha the command line syntax for `jtangle` is different to that of `ctangle`. i.e.
 
-`jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile`
+`jtangle(args, [logFunc])`
+
+`args` is a string array containing the following members in the same order: `[options] webfile[.w] {changefile[.ch]|-} outlang outfile`
 
 where `outlang` is the target language extension and `outfile` is the filename without language extension.
+
+logFunc = a function taking a single string parameter that will output that string somewhere as a log message. If no function is passed console.log will be used.
 
 When building from a Markdown source an intermediate WEB file must be generated before calling `jtangle`. A build script `build.js` is provided to fully process a Markdown file.
 

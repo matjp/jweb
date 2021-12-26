@@ -2880,7 +2880,7 @@ We use all of `argv` for the `webFileName` if there is a `DOT` in it, otherwise 
 ```ts
 @<Print_usage_error_message_and_quit@>=
 {
-  fatal('! Usage: jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile\n','');
+  fatal('! Usage: jtangle(args, [logFunc])\n','');
 }
 ```
 
