@@ -52,21 +52,22 @@ in the index.
 
 ```ts
 @<Global_const...@>=
-const AND_AND = 0o4; /* `\.{\&\&}'\,; corresponds to MIT's {\tentex\char'4} */
-const LT_LT = 0o20; /* `\.{<<}'\,;  corresponds to MIT's {\tentex\char'20} */
-const GT_GT = 0o21; /* `\.{>>}'\,;  corresponds to MIT's {\tentex\char'21} */
-const PLUS_PLUS = 0o13; /* `\.{++}'\,;  corresponds to MIT's {\tentex\char'13} */
-const MINUS_MINUS = 0o1; /* `\.{--}'\,;  corresponds to MIT's {\tentex\char'1} */
-const MINUS_GT = 0o31; /* `\.{->}'\,;  corresponds to MIT's {\tentex\char'31} */
-const NOT_EQ = 0o32; /* `\.{!=}'\,;  corresponds to MIT's {\tentex\char'32} */
-const LT_EQ = 0o34; /* `\.{<=}'\,;  corresponds to MIT's {\tentex\char'34} */
-const GT_EQ = 0o35; /* `\.{>=}'\,;  corresponds to MIT's {\tentex\char'35} */
-const EQ_EQ = 0o36; /* `\.{==}'\,;  corresponds to MIT's {\tentex\char'36} */
-const OR_OR = 0o37; /* `\.{\v\v}'\,;  corresponds to MIT's {\tentex\char'37} */
-const DOT_DOT_DOT = 0o16; /* `\.{...}'\,;  corresponds to MIT's {\tentex\char'16} */
-const COLON_COLON = 0o6; /* `\.{::}'\,;  corresponds to MIT's {\tentex\char'6} */
-const PERIOD_AST = 0o26; /* `\.{.*}'\,;  corresponds to MIT's {\tentex\char'26} */
-const MINUS_GT_AST = 0o27; /* `\.{->*}'\,;  corresponds to MIT's {\tentex\char'27} */
+const AND_AND = 0o4; /* &&; corresponds to MIT's char 0o4 */
+const LT_LT = 0o20; /* <<;  corresponds to MIT's char 0o20 */
+const GT_GT = 0o21; /* >>;  corresponds to MIT's char 0o21 */
+const PLUS_PLUS = 0o13; /* ++;  corresponds to MIT's char 0o13 */
+const MINUS_MINUS = 0o1; /* --;  corresponds to MIT's 0o1 */
+const MINUS_GT = 0o31; /* ->;  corresponds to MIT's 0o31 */
+const NOT_EQ = 0o32; /* !=;  corresponds to MIT's 0o32 */
+const LT_EQ = 0o34; /* <=;  corresponds to MIT's 0o34 */
+const GT_EQ = 0o35; /* >=;  corresponds to MIT's 0o35 */
+const EQ_EQ = 0o36; /* ==;  corresponds to MIT's 0o36 */
+const OR_OR = 0o37; /* ||;  corresponds to MIT's 0o37 */
+const DOT_DOT_DOT = 0o16; /* ...;  corresponds to MIT's 0o16 */
+const COLON_COLON = 0o6; /* ::;  corresponds to MIT's 0o6 */
+const PERIOD_AST = 0o26; /* .*;  corresponds to MIT's 0o26 */
+const MINUS_GT_AST = 0o27; /* ->*;  corresponds to MIT's 0o27 */
+const EQ_GT = 0o40;
 ```
 
 We define names for some frequently referenced character codes.
@@ -612,7 +613,7 @@ Codes less than $0o200$ are 7-bit `char` codes that represent themselves. Some o
 
 ```ts
 @<Global_const...@>=
-const STR = 0o2; /* takes the place of extended ASCII \.{\char2} */
+const STR = 0o2; /* takes the place of extended ASCII char 0o2 */
 const JOIN = 0o177; /* takes the place of ASCII delete */
 const OUTPUT_DEFS_FLAG = (2 * 0o24000 - 1);
 ```
@@ -733,7 +734,7 @@ function popLevel(flag: boolean)
 }
 ```
 
-The heart of the output procedure is the function `getOutput`, which produces the next token of output and sends it on to the lower-level function `outChar`. The main purpose of `getOutput` is to handle the necessary stacking and unstacking. It sends the value `SECTION_NUMBER` if the next output begins or ends the replacement text of some section, in which case `curVal` is that section's number (if beginning) or the negative of that value (if ending). (A section number of 0 indicates not the beginning or ending of a section, but a \&{\#line} command.) And it sends the value `IDENTIFIER` if the next output is an identifier, in which case `curVal` points to that identifier name.
+The heart of the output procedure is the function `getOutput`, which produces the next token of output and sends it on to the lower-level function `outChar`. The main purpose of `getOutput` is to handle the necessary stacking and unstacking. It sends the value `SECTION_NUMBER` if the next output begins or ends the replacement text of some section, in which case `curVal` is that section's number (if beginning) or the negative of that value (if ending). (A section number of 0 indicates not the beginning or ending of a section, but a #line command.) And it sends the value `IDENTIFIER` if the next output is an identifier, in which case `curVal` points to that identifier name.
 
 ```ts
 @<Global_const...@>=
@@ -1075,6 +1076,7 @@ case GT_GT: putChar(GREATERTHAN); putChar(GREATERTHAN); outState = NORMAL; done 
 case EQ_EQ: putChar(EQUALS); putChar(EQUALS); outState = NORMAL; done = true; break;
 case LT_LT: putChar(LESSTHAN); putChar(LESSTHAN); outState = NORMAL; done = true; break;
 case GT_EQ: putChar(GREATERTHAN); putChar(EQUALS); outState = NORMAL; done = true; break;
+case EQ_GT: putChar(EQUALS); putChar(GREATERTHAN); outState = NORMAL; done = true; break;
 case LT_EQ: putChar(LESSTHAN); putChar(EQUALS); outState = NORMAL; done = true; break;
 case NOT_EQ: putChar(EXCLAMATION); putChar(EQUALS); outState = NORMAL; done = true; break;
 case AND_AND: putChar(AMPERSAND); putChar(AMPERSAND); outState = NORMAL; done = true; break;
@@ -1354,7 +1356,8 @@ switch(cc) {
     if (cNext === COLON && loc++ <= limit) return(COLON_COLON);
     break;
   case EQUALS:
-    if (cNext === EQUALS && loc++ <= limit) return(EQ_EQ);
+    if (cNext === EQUALS && loc++ <= limit) return(EQ_EQ)
+    else if (cNext === GREATERTHAN && loc++ <= limit) return(EQ_GT);
     break;
   case GREATERTHAN:
     if (cNext === EQUALS) {

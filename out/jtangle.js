@@ -25,6 +25,7 @@ const DOT_DOT_DOT = 0o16;
 const COLON_COLON = 0o6;
 const PERIOD_AST = 0o26;
 const MINUS_GT_AST = 0o27;
+const EQ_GT = 0o40;
 /*:4*/ /*5:*/
 const BEL = 0o7;
 const BACKSPACE = '\b'.charCodeAt(0);
@@ -800,6 +801,12 @@ function outChar(curChar) {
                 outState = NORMAL;
                 done = true;
                 break;
+            case EQ_GT:
+                putChar(EQUALS);
+                putChar(GREATERTHAN);
+                outState = NORMAL;
+                done = true;
+                break;
             case LT_EQ:
                 putChar(LESSTHAN);
                 putChar(EQUALS);
@@ -1048,6 +1055,8 @@ function getNext() {
                     case EQUALS:
                         if (cNext === EQUALS && loc++ <= limit)
                             return (EQ_EQ);
+                        else if (cNext === GREATERTHAN && loc++ <= limit)
+                            return (EQ_GT);
                         break;
                     case GREATERTHAN:
                         if (cNext === EQUALS) {
@@ -1370,6 +1379,8 @@ function getNext() {
             case EQUALS:
                 if (cNext === EQUALS && loc++ <= limit)
                     return (EQ_EQ);
+                else if (cNext === GREATERTHAN && loc++ <= limit)
+                    return (EQ_GT);
                 break;
             case GREATERTHAN:
                 if (cNext === EQUALS) {
