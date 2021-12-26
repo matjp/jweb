@@ -40,7 +40,7 @@ The "banner line" defined here should be changed whenever `jtangle` is modified.
 
 ```ts
 @<Global_const...@>=
-const BANNER = "This is JTANGLE (Version 0.1.2)\n";
+const BANNER = "This is JTANGLE (Version 0.1.3)\n";
 ```
 
 ## The character set

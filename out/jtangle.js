@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.1.2)\n";
+const BANNER = "This is JTANGLE (Version 0.1.3)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
@@ -2323,7 +2323,7 @@ function scanArgs(argv) {
             else 
             /*161:*/
             {
-                fatal('! Usage: jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile\n', '');
+                fatal('! Usage: jtangle(args, [logFunc])\n', '');
             }
             /*:161*/
         }
@@ -2331,7 +2331,7 @@ function scanArgs(argv) {
     if (!processedWebFile) 
     /*161:*/
     {
-        fatal('! Usage: jtangle [options] webfile[.w] {changefile[.ch]|-} outlang outfile\n', '');
+        fatal('! Usage: jtangle(args, [logFunc])\n', '');
     }
     /*:161*/
     if (flags[FLAG.b]) {
