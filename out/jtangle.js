@@ -8,13 +8,14 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.1.3)\n";
+const BANNER = "This is JTANGLE (Version 0.1.4)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
 const GT_GT = 0o21;
 const PLUS_PLUS = 0o13;
 const MINUS_MINUS = 0o1;
+const EQ_GT = 0o30;
 const MINUS_GT = 0o31;
 const NOT_EQ = 0o32;
 const LT_EQ = 0o34;
@@ -25,7 +26,6 @@ const DOT_DOT_DOT = 0o16;
 const COLON_COLON = 0o6;
 const PERIOD_AST = 0o26;
 const MINUS_GT_AST = 0o27;
-const EQ_GT = 0o40;
 /*:4*/ /*5:*/
 const BEL = 0o7;
 const BACKSPACE = '\b'.charCodeAt(0);
@@ -1053,8 +1053,10 @@ function getNext() {
                             return (COLON_COLON);
                         break;
                     case EQUALS:
-                        if (cNext === EQUALS && loc++ <= limit)
-                            return (EQ_EQ);
+                        if (cNext === EQUALS) {
+                            if (loc++ <= limit)
+                                return (EQ_EQ);
+                        }
                         else if (cNext === GREATERTHAN && loc++ <= limit)
                             return (EQ_GT);
                         break;
@@ -1377,8 +1379,10 @@ function getNext() {
                     return (COLON_COLON);
                 break;
             case EQUALS:
-                if (cNext === EQUALS && loc++ <= limit)
-                    return (EQ_EQ);
+                if (cNext === EQUALS) {
+                    if (loc++ <= limit)
+                        return (EQ_EQ);
+                }
                 else if (cNext === GREATERTHAN && loc++ <= limit)
                     return (EQ_GT);
                 break;

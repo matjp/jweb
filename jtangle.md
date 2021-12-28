@@ -6,7 +6,7 @@ jweb:ts
 
 This program by Matthew J. Penwill is based on a program by Silvio Levy and Donald E. Knuth.  
 It is distributed WITHOUT ANY WARRANTY, express or implied.  
-Version 0.1.3 --- December 2021
+Version 0.1.4 --- December 2021
 
 Copyright (C) 2021 Matthew J. Penwill
 
@@ -40,7 +40,7 @@ The "banner line" defined here should be changed whenever `jtangle` is modified.
 
 ```ts
 @<Global_const...@>=
-const BANNER = "This is JTANGLE (Version 0.1.3)\n";
+const BANNER = "This is JTANGLE (Version 0.1.4)\n";
 ```
 
 ## The character set
@@ -57,6 +57,7 @@ const LT_LT = 0o20; /* <<;  corresponds to MIT's char 0o20 */
 const GT_GT = 0o21; /* >>;  corresponds to MIT's char 0o21 */
 const PLUS_PLUS = 0o13; /* ++;  corresponds to MIT's char 0o13 */
 const MINUS_MINUS = 0o1; /* --;  corresponds to MIT's 0o1 */
+const EQ_GT = 0o30;
 const MINUS_GT = 0o31; /* ->;  corresponds to MIT's 0o31 */
 const NOT_EQ = 0o32; /* !=;  corresponds to MIT's 0o32 */
 const LT_EQ = 0o34; /* <=;  corresponds to MIT's 0o34 */
@@ -67,7 +68,6 @@ const DOT_DOT_DOT = 0o16; /* ...;  corresponds to MIT's 0o16 */
 const COLON_COLON = 0o6; /* ::;  corresponds to MIT's 0o6 */
 const PERIOD_AST = 0o26; /* .*;  corresponds to MIT's 0o26 */
 const MINUS_GT_AST = 0o27; /* ->*;  corresponds to MIT's 0o27 */
-const EQ_GT = 0o40;
 ```
 
 We define names for some frequently referenced character codes.
@@ -1356,7 +1356,9 @@ switch(cc) {
     if (cNext === COLON && loc++ <= limit) return(COLON_COLON);
     break;
   case EQUALS:
-    if (cNext === EQUALS && loc++ <= limit) return(EQ_EQ)
+    if (cNext === EQUALS) {
+      if (loc++ <= limit) return(EQ_EQ);
+    }
     else if (cNext === GREATERTHAN && loc++ <= limit) return(EQ_GT);
     break;
   case GREATERTHAN:
