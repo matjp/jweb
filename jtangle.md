@@ -6,7 +6,7 @@ jweb:ts
 
 This program by Matthew J. Penwill is based on a program by Silvio Levy and Donald E. Knuth.  
 It is distributed WITHOUT ANY WARRANTY, express or implied.  
-Version 0.1.4 --- December 2021
+Version 0.1.5 --- December 2021
 
 Copyright (C) 2021 Matthew J. Penwill
 
@@ -40,7 +40,7 @@ The "banner line" defined here should be changed whenever `jtangle` is modified.
 
 ```ts
 @<Global_const...@>=
-const BANNER = "This is JTANGLE (Version 0.1.4)\n";
+const BANNER = "This is JTANGLE (Version 0.1.5)\n";
 ```
 
 ## The character set
@@ -134,9 +134,7 @@ let log: (msg: string) => void;
 
 ```ts
 @<Get_log_function@>=
-{
-    log = logFunc ? log = logFunc : console.log;
-}
+log = logFunc ? logFunc : console.log;
 ```
 
 The following parameters were sufficient in `ctangle`, they should also be sufficient for most applications of `jtangle`.
@@ -2761,7 +2759,6 @@ function scanArgs(argv: string[])
   let processedChangeFile = false;
   let processedOutFile = false;
   let processedLang = false;
-  let processedLogFunction = false;
   let flagChange: boolean;
   let i: number;
 
@@ -2882,7 +2879,7 @@ We use all of `argv` for the `webFileName` if there is a `DOT` in it, otherwise 
 ```ts
 @<Print_usage_error_message_and_quit@>=
 {
-  fatal('! Usage: jtangle(args, [logFunc])\n','');
+  fatal('! Usage: jtangle(args[, logFunc])\n','');
 }
 ```
 

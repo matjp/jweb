@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.1.4)\n";
+const BANNER = "This is JTANGLE (Version 0.1.5)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
@@ -2240,7 +2240,6 @@ function scanArgs(argv) {
     let processedChangeFile = false;
     let processedOutFile = false;
     let processedLang = false;
-    let processedLogFunction = false;
     let flagChange;
     let i;
     while (--argc >= 0) {
@@ -2327,7 +2326,7 @@ function scanArgs(argv) {
             else 
             /*161:*/
             {
-                fatal('! Usage: jtangle(args, [logFunc])\n', '');
+                fatal('! Usage: jtangle(args[, logFunc])\n', '');
             }
             /*:161*/
         }
@@ -2335,7 +2334,7 @@ function scanArgs(argv) {
     if (!processedWebFile) 
     /*161:*/
     {
-        fatal('! Usage: jtangle(args, [logFunc])\n', '');
+        fatal('! Usage: jtangle(args[, logFunc])\n', '');
     }
     /*:161*/
     if (flags[FLAG.b]) {
@@ -2357,9 +2356,7 @@ function putString(s) {
 }
 module.exports = function jtangle(argv, logFunc) {
     /*8:*/
-    {
-        log = logFunc ? log = logFunc : console.log;
-    }
+    log = logFunc ? logFunc : console.log;
     /*:8*/
     /*166:*/
     stringMem = [];
