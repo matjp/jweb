@@ -14,6 +14,26 @@ Permission is granted to make and distribute verbatim copies of this document pr
 
 Permission is granted to copy and distribute modified versions of this document under the conditions for verbatim copying, provided that the entire resulting derived work is given a different name and distributed under the terms of a permission notice identical to this one.
 
+## Table of contents
+
+1. [Introduction](#introduction)
+2. [The character set](#the-character-set)
+3. [Program outline](#program-outline)
+4. [Storage of names and strings](#storage-of-names-and-strings)
+5. [Data structures](#data-structures)
+6. [Tokens](#tokens)
+7. [Stacks for output](#stacks-for-output)
+8. [Producing the output](#producing-the-output)
+9. [The big output switch](#the-big-output-switch)
+10. [Introduction to the input phase](#introduction-to-the-input-phase)
+11. [Inputting the next token](#inputting-the-next-token)
+12. [Scanning a macro definition](#scanning-a-macro-definition)
+13. [Scanning a section](#scanning-a-section)
+14. [Input routines](#input-routines)
+15. [Reporting errors to the user](#reporting-errors-to-the-user)
+16. [Command line arguments](#command-line-arguments)
+17. [Output](#output)
+
 ## Introduction
 
 jtangle.md is a JWEB implementation of the `ctangle` program, a part of the CWEB system of structured documentation.
@@ -892,7 +912,7 @@ We make `endSectionFiles` point just beyond the end of `sectionFiles`. The stack
 }
 ```
 
-## The big output switch.  Here then is the routine that does the output
+## The big output switch
 
 ```ts
 @c
