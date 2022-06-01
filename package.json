@@ -1,6 +1,6 @@
 {
   "name": "@matjp/jweb",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "The JWEB System of Structured Documentation",
   "main": "out/jtangle.js",
   "scripts": {
@@ -21,9 +21,6 @@
     "url": "https://github.com/matjp/jweb/issues"
   },
   "homepage": "https://github.com/matjp/jweb#readme",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@matjp"
-  },
   "dependencies": {
     "@types/node": "^16.11.13",
     "eslint": "^8.4.1",
