@@ -6,9 +6,9 @@ jweb:ts
 
 This program by Matthew J. Penwill is based on a program by Silvio Levy and Donald E. Knuth.  
 It is distributed WITHOUT ANY WARRANTY, express or implied.  
-Version 0.1.6 --- December 2021
+Version 0.1.7 --- June 2022
 
-Copyright (C) 2021 Matthew J. Penwill
+Copyright (C) 2022 Matthew J. Penwill
 
 Permission is granted to make and distribute verbatim copies of this document provided that the copyright notice and this permission notice are preserved on all copies.
 
@@ -60,7 +60,7 @@ The "banner line" defined here should be changed whenever `jtangle` is modified.
 
 ```ts
 @<Global_const...@>=
-const BANNER = "This is JTANGLE (Version 0.1.6)\n";
+const BANNER = "This is JTANGLE (Version 0.1.7)\n";
 ```
 
 ## The character set
