@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.1.7)\n";
+const BANNER = "This is JTANGLE (Version 0.1.8)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
@@ -121,7 +121,7 @@ const LONG_BUF_SIZE = (BUF_SIZE + LONGEST_NAME);
 const buf = Buffer.alloc(LONG_BUF_SIZE, 0, 'utf8');
 const bufEnd = BUF_SIZE - 1;
 /*:114*/ /*117:*/
-const MAX_FILE_NAME_LENGTH = 60;
+const MAX_FILE_NAME_LENGTH = 4096;
 const MAX_INCLUDE_DEPTH = 10;
 /*:117*/ /*120:*/
 const changeBuf = Buffer.alloc(BUF_SIZE, 0, 'utf8');
