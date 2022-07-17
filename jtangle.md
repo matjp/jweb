@@ -2180,7 +2180,7 @@ The line number of each open file is also kept for error reporting and for the b
 
 ```ts
 @<Global_const...@>=
-const MAX_FILE_NAME_LENGTH = 60;
+const MAX_FILE_NAME_LENGTH = 4096;
 const MAX_INCLUDE_DEPTH = 10; /* maximum number of source files open simultaneously, not counting the change file */
 ```
 
