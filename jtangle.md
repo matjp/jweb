@@ -1042,7 +1042,8 @@ function outChar(curChar: number) {
     switch (curChar) {
       case NEWLINE:
         if (protect && outState !== VERBATIM) putChar(SPACE);
-        if (protect || outState === VERBATIM) putChar(BACKSLASH);
+        //if (protect || outState === VERBATIM) putChar(BACKSLASH);
+        if (protect) putChar(BACKSLASH);
         flushBuffer();
         if (outState !== VERBATIM) outState = NORMAL;
         done = true; break;
@@ -1214,10 +1215,10 @@ function skipAhead(): number /* skip to next control code */ {
 }
 ```
 
-The `skipComment` procedure reads through the input at somewhat high speed in order to pass over comments, which JTANGLE does not transmit to the output. If the comment is introduced by `'/*'`, `skipComment` proceeds until finding the end-comment token `'*/'` or a newline; in the latter case `skipComment` will be called again by `getNext`, since the comment is not finished.  This is done so that each newline in the code part of a section is copied to the output; otherwise the `#line` commands inserted into the output file by the output routines become useless.  
+The `readComment` procedure handles the reading of 'short and 'long' comments. Comment texts will be copied to the output file unless the argument `skipComment` is `true`, in which case the comment texts will be discarded. If the comment is introduced by `'/*'`, `readComment` proceeds until finding the end-comment token `'*/'` or a newline; in the latter case `readComment` will be called again by `getNext`, since the comment is not finished.  This is done so that each newline in the code part of a section is copied to the output; otherwise the `#line` commands inserted into the output file by the output routines become useless.  
 On the other hand, if the comment is introduced by `//` (i.e., if it is a "short comment"), it always is simply delimited by the next newline. The boolean argument `isLongComment` distinguishes between the two types of comments.
 
-If `skipComment` comes to the end of the section, it prints an error message. No comment, long or short, is allowed to contain '@ ' or '@*'.
+If `readComment` comes to the end of the section, it prints an error message. No comment, long or short, is allowed to contain '@ ' or '@*'.
 
 ```ts
 @<Global_var...@>=
@@ -1226,7 +1227,7 @@ let commentContinues = false; /* are we scanning a comment? */
 
 ```ts
 @c
-function skipComment(isLongComment: boolean) /* skips over comments */
+function readComment(skipComment: boolean, isLongComment: boolean)
 {
   let cc: number; /* current character */
   while (true) {
@@ -1246,11 +1247,20 @@ function skipComment(isLongComment: boolean) /* skips over comments */
       }
     }
     cc = buf[loc++];
+    if (!skipComment) {
+      if (++idLoc <= stringTextEnd) stringText[idLoc] = cc;
+    }
+
     if (isLongComment && cc === STAR && buf[loc] === SLASH) {
+      if (!skipComment) {
+        if (++idLoc <= stringTextEnd) stringText[idLoc] = SLASH;
+        idLoc++;
+      }
       loc++;
       commentContinues = false;
       return;
     }
+
     if (cc === AT) {
       if (ccode[buf[loc]] === NEW_SECTION) {
         errPrint("! Section name ended in mid-comment");
@@ -1296,6 +1306,7 @@ function getNext(): number /* produces the next input token */
 {
   let preprocessing = false;
   let cc: number; /* the current character */
+  let nc: number; /* the next character */
   while (true) {
     if (loc > limit) {
       if (preprocessing && buf[limit-1] !== BACKSLASH) preprocessing = false;
@@ -1308,13 +1319,31 @@ function getNext(): number /* produces the next input token */
     }
     
     cc = buf[loc];
-    if (commentContinues || (cc === SLASH && (buf[loc+1] === STAR || buf[loc+1] === SLASH))) {
-      skipComment(commentContinues || buf[loc+1] === STAR);
-      // scan to end of comment or newline
-      if (commentContinues) {
-        return(NEWLINE)
-      } else {
-        continue
+    nc = buf[loc+1];
+    
+    /* Handle the reading of comment strings */
+    if (commentContinues || (cc === SLASH && (nc === STAR || nc === SLASH))) {
+      if (flags[FLAG.c]) {
+        if (cc === SLASH && (nc === STAR || nc === SLASH)) {
+          idLoc = 0;
+          idFirst = 1;
+        }
+        // scan to end of comment or newline
+        readComment(false, commentContinues || nc === STAR);
+        if (commentContinues) {
+          if (++idLoc <= stringTextEnd) stringText[idLoc] = NEWLINE;
+          return(NEWLINE)
+        } else {
+          return(STR);
+        }
+      } else { /* ignore comments */
+        readComment(true, commentContinues || nc === STAR);
+        // scan to end of comment or newline
+        if (commentContinues) {
+          return(NEWLINE)
+        } else {
+          continue
+        }
       }
     }
 
@@ -1819,8 +1848,8 @@ case NEW_SECTION:
   appRepl(a); /* STR or CONSTANT */
   switch (a) {
     case STR:
-      while (idFirst < idLoc) { /* simplify @@ pairs */
-        if (stringText[idFirst] === AT) {
+      while (idFirst < idLoc) {
+        if (stringText[idFirst] === AT) { /* simplify @@ pairs */
           if (stringText[idFirst + 1] === AT) idFirst++
           else errPrint("! Double @@ should be used in string");
         }
@@ -2736,7 +2765,8 @@ enum FLAG {
   b = 'b'.charCodeAt(0), /* should the banner line be printed? */
   p = 'p'.charCodeAt(0), /* should progress reports be printed? */
   s = 's'.charCodeAt(0), /* should statistics be printed at end of run? */
-  h = 'h'.charCodeAt(0) /* should lack of errors be announced? */
+  h = 'h'.charCodeAt(0), /* should lack of errors be announced? */
+  c = 'c'.charCodeAt(0) /* should comments be included in the output file? */
 }
 ```
 
@@ -2744,8 +2774,8 @@ The `flags` will be initially `false`. Some of them are set to `true` before sca
 
 ```ts
 @<Set_the_default_options@>=
-for (let i = 0; i < flags.length; i++) flags[i] = false;
-flags[FLAG.b] = flags[FLAG.h] = flags[FLAG.p] = true;
+flags[FLAG.s] = flags[FLAG.c] = false;
+flags[FLAG.b] = flags[FLAG.p] = flags[FLAG.h] = true;
 ```
 
 We now must look at the command line arguments and set the file names accordingly. At least one file name must be present: the JWEB file. It may have an extension, or it may omit the extension to get `".w"` or `".web"` added. The output file name is formed by replacing the extension by outputLanguage, after removing the directory name (if any).
