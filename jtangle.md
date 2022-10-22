@@ -1140,9 +1140,11 @@ case IDENTIFIER:
 ```ts
 @<Case_of_a_sec...@>=
 case SECTION_NUMBER:
-  if (curVal > 0) putString('/*' + curVal.toString() + ':*/');
-  else if (curVal < 0) putString('/*:' + -curVal.toString() + '*/');
-  else if (protect) {
+  if (curVal > 0) {
+    if (flags[FLAG.n]) putString('/*' + curVal.toString() + ':*/');
+  } else if (curVal < 0) {
+    if (flags[FLAG.n]) putString('/*:' + -curVal.toString() + '*/');
+  } else if (protect) {
     curState.byte += 4; /* skip line number and file name */
     curChar = NEWLINE;
     break; /* restart */
@@ -2766,7 +2768,8 @@ enum FLAG {
   p = 'p'.charCodeAt(0), /* should progress reports be printed? */
   s = 's'.charCodeAt(0), /* should statistics be printed at end of run? */
   h = 'h'.charCodeAt(0), /* should lack of errors be announced? */
-  c = 'c'.charCodeAt(0) /* should comments be included in the output file? */
+  c = 'c'.charCodeAt(0), /* should comments be included in the output file? */
+  n = 'n'.charCodeAt(0)  /* should section numbers be included in the output file */
 }
 ```
 
@@ -2774,7 +2777,7 @@ The `flags` will be initially `false`. Some of them are set to `true` before sca
 
 ```ts
 @<Set_the_default_options@>=
-flags[FLAG.s] = flags[FLAG.c] = false;
+flags[FLAG.s] = flags[FLAG.c] = flags[FLAG.n] = false;
 flags[FLAG.b] = flags[FLAG.p] = flags[FLAG.h] = true;
 ```
 
@@ -2843,6 +2846,9 @@ function scanArgs(argv: string[])
 
   if (flags[FLAG.b]) { log(BANNER) }; /* print a banner line */
 
+  log('Flags: banner:' + flags[FLAG.b].toString() + ', progress:' + flags[FLAG.p].toString() +
+      ', debug info:' + flags[FLAG.s].toString() + ', report no errors:' + flags[FLAG.h].toString() +
+      ', comments:' + flags[FLAG.c].toString() + ', section numbers:' + flags[FLAG.n].toString());
   log('Web file name: ' + fileName[0]);
   log('Alt web file name: ' + altWebFileName);
   log('Change file name: ' + changeFileName);
