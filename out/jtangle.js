@@ -8,7 +8,7 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 /*:2*/
 /*3:*/
-const BANNER = "This is JTANGLE (Version 0.1.8)\n";
+const BANNER = "This is JTANGLE (Version 0.1.9)\n";
 /*:3*/ /*4:*/
 const AND_AND = 0o4;
 const LT_LT = 0o20;
@@ -137,6 +137,8 @@ var FLAG;
     FLAG[FLAG["p"] = 'p'.charCodeAt(0)] = "p";
     FLAG[FLAG["s"] = 's'.charCodeAt(0)] = "s";
     FLAG[FLAG["h"] = 'h'.charCodeAt(0)] = "h";
+    FLAG[FLAG["c"] = 'c'.charCodeAt(0)] = "c";
+    FLAG[FLAG["n"] = 'n'.charCodeAt(0)] = "n";
 })(FLAG || (FLAG = {}));
 /*:43*/
 /*7:*/
@@ -696,7 +698,7 @@ function outChar(curChar) {
             case NEWLINE:
                 if (protect && outState !== VERBATIM)
                     putChar(SPACE);
-                if (protect || outState === VERBATIM)
+                if (protect)
                     putChar(BACKSLASH);
                 flushBuffer();
                 if (outState !== VERBATIM)
@@ -725,10 +727,14 @@ function outChar(curChar) {
             /*:68*/
             /*69:*/
             case SECTION_NUMBER:
-                if (curVal > 0)
-                    putString('/*' + curVal.toString() + ':*/');
-                else if (curVal < 0)
-                    putString('/*:' + -curVal.toString() + '*/');
+                if (curVal > 0) {
+                    if (flags[FLAG.n])
+                        putString('/*' + curVal.toString() + ':*/');
+                }
+                else if (curVal < 0) {
+                    if (flags[FLAG.n])
+                        putString('/*:' + -curVal.toString() + '*/');
+                }
                 else if (protect) {
                     curState.byte += 4;
                     curChar = NEWLINE;
@@ -922,7 +928,7 @@ function skipAhead() {
     }
 }
 /*:72*/ /*74:*/
-function skipComment(isLongComment) {
+function readComment(skipComment, isLongComment) {
     let cc;
     while (true) {
         if (loc > limit) {
@@ -943,7 +949,16 @@ function skipComment(isLongComment) {
             }
         }
         cc = buf[loc++];
+        if (!skipComment) {
+            if (++idLoc <= stringTextEnd)
+                stringText[idLoc] = cc;
+        }
         if (isLongComment && cc === STAR && buf[loc] === SLASH) {
+            if (!skipComment) {
+                if (++idLoc <= stringTextEnd)
+                    stringText[idLoc] = SLASH;
+                idLoc++;
+            }
             loc++;
             commentContinues = false;
             return;
@@ -971,6 +986,7 @@ function isHigh(cc) {
 function getNext() {
     let preprocessing = false;
     let cc;
+    let nc;
     while (true) {
         if (loc > limit) {
             if (preprocessing && buf[limit - 1] !== BACKSLASH)
@@ -1001,13 +1017,31 @@ function getNext() {
                 return (NEWLINE);
         }
         cc = buf[loc];
-        if (commentContinues || (cc === SLASH && (buf[loc + 1] === STAR || buf[loc + 1] === SLASH))) {
-            skipComment(commentContinues || buf[loc + 1] === STAR);
-            if (commentContinues) {
-                return (NEWLINE);
+        nc = buf[loc + 1];
+        if (commentContinues || (cc === SLASH && (nc === STAR || nc === SLASH))) {
+            if (flags[FLAG.c]) {
+                if (cc === SLASH && (nc === STAR || nc === SLASH)) {
+                    idLoc = 0;
+                    idFirst = 1;
+                }
+                readComment(false, commentContinues || nc === STAR);
+                if (commentContinues) {
+                    if (++idLoc <= stringTextEnd)
+                        stringText[idLoc] = NEWLINE;
+                    return (NEWLINE);
+                }
+                else {
+                    return (STR);
+                }
             }
             else {
-                continue;
+                readComment(true, commentContinues || nc === STAR);
+                if (commentContinues) {
+                    return (NEWLINE);
+                }
+                else {
+                    continue;
+                }
             }
         }
         const cNext = buf[++loc];
@@ -2341,6 +2375,9 @@ function scanArgs(argv) {
         log(BANNER);
     }
     ;
+    log('Flags: banner:' + flags[FLAG.b].toString() + ', progress:' + flags[FLAG.p].toString() +
+        ', debug info:' + flags[FLAG.s].toString() + ', report no errors:' + flags[FLAG.h].toString() +
+        ', comments:' + flags[FLAG.c].toString() + ', section numbers:' + flags[FLAG.n].toString());
     log('Web file name: ' + fileName[0]);
     log('Alt web file name: ' + altWebFileName);
     log('Change file name: ' + changeFileName);
@@ -2480,9 +2517,8 @@ module.exports = function jtangle(argv, logFunc) {
     nameDir[0].rLink = 0;
     /*:20*/
     /*152:*/
-    for (let i = 0; i < flags.length; i++)
-        flags[i] = false;
-    flags[FLAG.b] = flags[FLAG.h] = flags[FLAG.p] = true;
+    flags[FLAG.s] = flags[FLAG.c] = flags[FLAG.n] = false;
+    flags[FLAG.b] = flags[FLAG.p] = flags[FLAG.h] = true;
     /*:152*/
     /*154:*/
     scanArgs(argv);
