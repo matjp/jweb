@@ -55,8 +55,3 @@ See `package.json` for examples of calling `build.js` for `jtangle` and the exam
 [JWEB Editor](https://marketplace.visualstudio.com/items?itemName=matjp.jweb-editor) is a VS Code extension for editing JWEB files.
 
 It automates the calling of `jtangle` on each file save and allows the use of syntax highlighting, Markdown preview and other Markdown extensions with your JWEB documents.
-
-<br>
-If you find this software useful please consider making a contribution to support the development of free and open software:
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?business=4Y8W9NDGYET6A&no_recurring=0&currency_code=USD)
