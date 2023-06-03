@@ -26,7 +26,7 @@ jweb:<language>
 
 where `<language>` is the language specifier that will be appended to the output filename. e.g. (c, cpp, js, ts).
 
-See `cwebman.pdf` in `docs` for the CWEB syntax, and see `jtangle.md` and the `examples` folder for JWEB source examples.
+See [`cwebman.pdf`](./docs/cwebman.pdf) in `docs` for the CWEB syntax, and see [`jtangle.md`](./jtangle.md) and the [`examples`](./examples/) folder for JWEB source examples.
 
 ## Generating a target source file
 
@@ -48,7 +48,7 @@ The markdown file is converted into a WEB file by concatenating all of the fence
 
 Then the WEB file is passed into `jtangle` to produce the target source file.
 
-See `package.json` for examples of calling `build.js` for `jtangle` and the examples.
+See [`package.json`](./package.json) for examples of calling [`build.js`](./build.js) for `jtangle` and the examples.
 
 ## VS Code Extension
 
